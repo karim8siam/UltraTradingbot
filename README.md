@@ -1,117 +1,86 @@
-# UltraTradingBot 🚀
+# UltraTradingBot Suite 🚀
 
-AI-Powered Binance Futures Trading Engine with Multi-Layer Institutional Intelligence.
+Multi-Strategy Institutional Algorithmic Crypto Suite for 24/7 Uninterrupted Trading.
 
-## Architecture
+All engines operate **fully decoupled and isolated** — if one engine encounters network latency, rate limits, or crashes, the remaining engines continue trading without interruption.
+
+---
+
+## 🏗️ Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────┐
-│              👑 1-Hour Bitcoin Sentinel              │
-│         (Macro Trend Authority for All Pairs)       │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌─────────────┐  ┌──────────────┐  ┌────────────┐ │
-│  │ 5M Execution│──│15M Structure │──│ ML Ensemble │ │
-│  │   Engine    │  │ Order Blocks │  │ RF+XGBoost  │ │
-│  └─────────────┘  └──────────────┘  └────────────┘ │
-│                         │                           │
-│              ┌──────────────────────┐               │
-│              │  Gemini AI Reasoner  │               │
-│              │  (Final Gate Review) │               │
-│              └──────────────────────┘               │
-│                         │                           │
-│              ┌──────────────────────┐               │
-│              │  Binance Execution   │               │
-│              │  1% Risk | 1:2 R:R   │               │
-│              │  Server-Side SL/TP   │               │
-│              └──────────────────────┘               │
-└─────────────────────────────────────────────────────┘
+UltraTradingbot/
+├── engines/
+│   ├── engine_1_multiregime_ml/       # 5M/15M/1H Multi-Regime + ML Ensemble + Gemini AI
+│   ├── engine_2_momentum_3candle/     # 15M 3-Candle Momentum & Volume Breakout
+│   ├── ...                            # Future Engines (SMC, Fibonacci, FVG, GFS, Swing)
+├── screener/                          # Phase 2: 7-Day 60% Win-Rate Scanner (30 coins)
+├── docker-compose.yml                 # Master 24/7 Multi-Service Orchestrator
+├── .env.example                       # Central credentials & configs
+└── README.md
 ```
 
-## Features
+---
 
-- **30 Whitelisted Pairs** — Comprehensive Binance Futures coverage
-- **1:2 Risk/Reward Ratio** — Double profit target vs stop loss
-- **1% Risk Per Trade** — Strict portfolio risk management
-- **5x Isolated Leverage** — Conservative leverage with isolated margin
-- **7-Gate Trade Approval Pipeline**:
-  1. Technical Confluence Score ≥ 81/100
-  2. 15-Minute Macro Trend Alignment
-  3. 1-Hour Bitcoin Sovereign Sentinel
-  4. 5M Altcoin-BTC Divergence Guard
-  5. ML Dual-Ensemble (Random Forest + XGBoost) ≥ 58-62%
-  6. Google Gemini AI Quantitative Reasoning ≥ 58-62%
-  7. Final Consensus (ALL gates must approve)
-- **Server-Side SL/TP** — Native Binance STOP_MARKET & TAKE_PROFIT_MARKET orders for 24/7 offline protection
-- **Maker-First Execution** — Post-Only GTX limit orders for 60% fee savings
-- **Telegram Alerts** — Real-time trade notifications
-- **Google Sheets Sync** — Live portfolio tracking
+## ⚡ Active Engines
 
-## Quick Start
+### 1. Engine 1: Multi-Regime Institutional ML
+* **Timeframes:** 5M Execution | 15M Market Structure | 1H BTC Macro Sentinel
+* **Strategies:** Trend Pullback, Volatility Breakout, Range Mean-Reversion
+* **Intelligence:** Random Forest + XGBoost Meta-Classifier + Google Gemini Quantitative Reasoner
+* **Risk & Leverage:** 1% Risk per trade, 1:2 Risk/Reward, 5x Isolated Leverage, Server-Side SL/TP
+* **Pairs:** 30 Tier-1 Binance Futures Pairs
 
-### 1. Clone & Setup
+### 2. Engine 2: 15M 3-Candle Momentum
+* **Timeframe:** 15m
+* **Strategy:** 3-Candle continuous directional momentum with body ratio (>50%) & opposite wick filter (<35%)
+* **Hold Duration:** Fixed 30-minute hold (2 candles)
+* **Risk & Leverage:** 0.1% margin fraction per trade, 5x Isolated Leverage
+* **Max Concurrent Trades:** 4
+* **Pairs:** Top 25 High-Liquidity USDT-M Futures Pairs
+
+---
+
+## 🚀 Quick Start (Local / VPS)
+
+### Option A: Run with Docker Compose (Recommended for 24/7 Hosting)
+
 ```bash
+# 1. Clone repository
 git clone https://github.com/karim8siam/UltraTradingbot.git
 cd UltraTradingbot
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
 
-### 2. Configure
-```bash
+# 2. Copy and configure environment variables
 cp .env.example .env
-# Edit .env with your API keys
+
+# 3. Start all engines in background
+docker compose up -d
+
+# 4. View logs for a specific engine
+docker compose logs -f engine_1_multiregime_ml
+docker compose logs -f engine_2_momentum_3candle
+
+# 5. Stop all engines
+docker compose down
 ```
 
-### 3. Run
+### Option B: Run an Individual Engine Locally
+
 ```bash
+# Run Engine 1
+cd engines/engine_1_multiregime_ml
+pip install -r requirements.txt
+python bot.py
+
+# Run Engine 2
+cd engines/engine_2_momentum_3candle
+pip install -r requirements.txt
 python bot.py
 ```
 
-## Configuration
+---
 
-| Parameter | Default | Description |
-|---|---|---|
-| `DEFAULT_TIMEFRAME` | `5m` | Execution candle timeframe |
-| `HIGHER_TIMEFRAME` | `15m` | Institutional structure timeframe |
-| `BTC_SENTINEL_TIMEFRAME` | `1h` | Bitcoin macro trend timeframe |
-| `RISK_PER_TRADE_PERCENT` | `1.0` | Max risk per trade (% of balance) |
-| `DEFAULT_LEVERAGE` | `5` | Isolated leverage multiplier |
-| `MAX_OPEN_TRADES` | `30` | Maximum simultaneous positions |
-| `PAUSE_NEW_TRADES` | `false` | Emergency pause toggle |
-
-## Risk Management
-
-- **1% Maximum Risk** per trade — hard-capped with assertion guard
-- **1:2 Risk/Reward** — Take Profit = 2× Stop Loss distance
-- **Server-Side Protection** — SL and TP live on Binance's matching engine 24/7
-- **Anti-Whipsaw Cooldown** — 5-minute lockout after stop-out per symbol
-- **Losing Streak Halving** — 2 consecutive losses auto-cuts risk to 0.5%
-- **10% Drawdown** — Protection mode (risk capped to 0.5%)
-- **20% Drawdown** — Emergency halt (complete bot suspension)
-- **3% Daily Loss** — Kill switch stops all new entries
-
-## File Structure
-
-```
-├── bot.py                    # Main trading loop
-├── config.py                 # All configuration & parameters
-├── strategy.py               # Technical analysis & signal generation
-├── execution.py              # Order execution & position management
-├── risk_manager.py           # Position sizing & risk guardrails
-├── data_fetcher.py           # OHLCV & balance data from Binance
-├── btc_sentinel.py           # 1-Hour Bitcoin macro trend sentinel
-├── merge_engine.py           # ML + AI decision fusion
-├── gemini_reasoner.py        # Google Gemini AI trade evaluation
-├── ml_brain.py               # Random Forest + XGBoost ensemble
-├── database.py               # SQLite trade journal
-├── telegram_notifier.py      # Telegram alert integration
-├── recovery_state_engine.py  # Drawdown recovery state machine
-├── .env.example              # Environment template
-└── requirements.txt          # Python dependencies
-```
-
-## License
-
-Private — All rights reserved.
+## 🔒 Safety & Risk Protocol
+* **Dry-Run Default:** Set `DRY_RUN=true` to test signals and execution without real money.
+* **Server-Side Protection:** Stop Loss & Take Profit are mapped natively to Binance matching engines.
+* **Decoupled Failure Domains:** Each engine runs in its own process/container with independent memory and state.

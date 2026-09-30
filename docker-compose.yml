@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  engine_1_multiregime_ml:
+    build:
+      context: ./engines/engine_1_multiregime_ml
+      dockerfile: Dockerfile
+    container_name: engine_1_multiregime_ml
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./engines/engine_1_multiregime_ml/data:/app/data
+      - ./engines/engine_1_multiregime_ml/logs:/app/logs
+
+  engine_2_momentum_3candle:
+    build:
+      context: ./engines/engine_2_momentum_3candle
+      dockerfile: Dockerfile
+    container_name: engine_2_momentum_3candle
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./engines/engine_2_momentum_3candle/active_trades.json:/app/active_trades.json
