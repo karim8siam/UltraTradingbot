@@ -57,6 +57,20 @@ UltraTradingbot/
 * **Max Concurrent Trades:** 3
 * **Pairs:** Top 25 Verified High-Win-Rate Futures Pairs
 
+### 5. Engine 5: Deterministic SMC Futures Trading Bot
+* **Timeframes:** 4H Macro Bias | 1H Confirmation & Range | 15M Liquidity Sweeps | 5M Displacement, MSS & FVG Midpoint Entry
+* **Strategy:** Strictly deterministic Smart Money Concepts (Zero AI/subjective discretion)
+  * Confirmed Swings (`SWING_LENGTH=2`, no lookahead)
+  * Equal Highs/Lows (0.1% tolerance) & UTC Prev Day High/Low (PDH/PDL)
+  * 15M Liquidity Sweep + 5M Candle Close MSS + 5M FVG 50% Midpoint Limit Entry
+  * 14-Factor Setup Scoring (Requires Score >= 11/14)
+* **Profit-Locking Features:**
+  * **Dynamic Breakeven:** Moves Stop Loss to Entry price once trade reaches $+1.5R$.
+  * **Partial Take-Profit:** Scales out 50% position at $+2.0R$, letting remainder run to structural target.
+  * **Fee Drag Protection:** Filters out micro-stops ($< 0.20\%$).
+* **Risk & Leverage:** Strictly **1.0% Risk per trade**, **5x Leverage** with notional clamping, 2% Max Daily Loss kill switch, 3-loss cooldown.
+* **Pairs:** **Top 20 Liquid Futures Pairs** (`BTCUSDT`, `ETHUSDT`, `SOLUSDT`, `BNBUSDT`, `XRPUSDT`, `DOGEUSDT`, `ADAUSDT`, `AVAXUSDT`, `LINKUSDT`, `SUIUSDT`, `NEARUSDT`, `PEPEUSDT`, `SHIBUSDT`, `APTUSDT`, `LTCUSDT`, `TONUSDT`, `WIFUSDT`, `BCHUSDT`, `FETUSDT`, `TIAUSDT`).
+
 
 ---
 
