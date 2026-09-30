@@ -3,71 +3,100 @@ import config
 
 class Momentum3CandleStrategy:
     """
-    15-Minute 3-Candle Momentum Strategy:
-    - 3 consecutive completed green candles -> LONG
-    - 3 consecutive completed red candles -> SHORT
-    - Candle -4 (preceding the 3) must NOT be the same direction (fresh 3-candle sequence only).
-    - Rejects Dojis, weak candles, and rejection pinbars (requires healthy body >= 50% & small opposing wick).
+    15-Minute 5-Candle Momentum Exhaustion Reversal Strategy:
+    - Counts 5 consecutive healthy same-color candles (skipping Dojis & unhealthy pin bars).
+    - 5 Healthy Green Candles + RSI >= 65.0 -> SHORT (SELL)
+    - 5 Healthy Red Candles + RSI <= 35.0 -> LONG (BUY)
+    - Zero SL / Zero TP: Exits unconditionally after 3 candles (45 minutes).
     """
 
     @staticmethod
-    def is_doji(candle: Dict[str, Any]) -> bool:
+    def calculate_rsi(closes: List[float], period: int = 14) -> float:
+        if len(closes) < period + 1:
+            return 50.0
+        gains, losses = [], []
+        for i in range(1, len(closes)):
+            diff = closes[i] - closes[i - 1]
+            gains.append(max(diff, 0.0))
+            losses.append(max(-diff, 0.0))
+        
+        avg_gain = sum(gains[:period]) / period
+        avg_loss = sum(losses[:period]) / period
+        
+        for i in range(period, len(gains)):
+            avg_gain = (avg_gain * (period - 1) + gains[i]) / period
+            avg_loss = (avg_loss * (period - 1) + losses[i]) / period
+            
+        if avg_loss == 0:
+            return 100.0
+        rs = avg_gain / avg_loss
+        return 100.0 - (100.0 / (1.0 + rs))
+
+    @staticmethod
+    def is_healthy_candle(candle: Dict[str, Any]) -> bool:
         """
-        Check if a candle is a Doji (open and close are virtually equal / flat line).
+        Check if candle is healthy (not a Doji and not an unhealthy long-wick pin).
+        Body must be >= 30% of total candle range.
         """
-        open_p = candle["open"]
-        close_p = candle["close"]
-        high_p = candle["high"]
-        low_p = candle["low"]
+        open_p = float(candle["open"])
+        close_p = float(candle["close"])
+        high_p = float(candle["high"])
+        low_p = float(candle["low"])
 
         total_range = high_p - low_p
         if total_range <= 0:
-            return True  # Zero range is a flat line/doji
+            return False
 
         body = abs(close_p - open_p)
         body_ratio = body / total_range
+        price_move_pct = body / open_p
 
-        # If body is less than 10% of total range or open == close, it is a Doji
-        if body_ratio < 0.10 or open_p == close_p:
-            return True
-
-        return False
+        # Reject Dojis (body < 30%) and flat noise (move < 0.05%)
+        return bool(body_ratio >= config.MIN_BODY_RATIO and price_move_pct >= config.MIN_CANDLE_RANGE_PCT)
 
     @classmethod
     def evaluate_klines(cls, klines: List[Dict[str, Any]]) -> Optional[str]:
         """
-        Evaluates kline series.
-        Expects at least 5 candles (klines[-1] is the unclosed live candle;
-        klines[-2], klines[-3], klines[-4] are the 3 completed target candles;
-        klines[-5] is the prior candle).
-
+        Evaluates closed klines.
+        Skips Dojis and finds the last 5 healthy directional candles.
         Returns:
-            "BUY" for Long signal,
-            "SELL" for Short signal,
-            None if no signal.
+            "BUY" for Long (5 Red + RSI <= 35)
+            "SELL" for Short (5 Green + RSI >= 65)
+            None otherwise
         """
-        if len(klines) < 5:
+        if len(klines) < 10:
             return None
 
-        c_prev = klines[-5]  # Candle prior to sequence
-        c1 = klines[-4]      # 1st of the 3 candles
-        c2 = klines[-3]      # 2nd of the 3 candles
-        c3 = klines[-2]      # 3rd of the 3 candles (most recently closed)
+        # Ignore unclosed last candle, look at closed history
+        closed_klines = klines[:-1]
+        closes = [float(k["close"]) for k in closed_klines]
+        rsi = cls.calculate_rsi(closes, config.RSI_PERIOD)
 
-        # Check for 3 Consecutive Green Candles (LONG)
-        if c1["close"] > c1["open"] and c2["close"] > c2["open"] and c3["close"] > c3["open"]:
-            # Prior candle must NOT be green (strictly a fresh 3-candle sequence)
-            if c_prev["close"] <= c_prev["open"]:
-                # Ensure none of the 3 candles is a Doji
-                if not cls.is_doji(c1) and not cls.is_doji(c2) and not cls.is_doji(c3):
-                    return "BUY"
+        # Look at window of last 8 closed candles
+        recent_window = closed_klines[-8:]
+        
+        # Filter out Dojis & unhealthy pins
+        healthy_candles = [c for c in recent_window if cls.is_healthy_candle(c)]
+        
+        if len(healthy_candles) < 5:
+            return None
 
-        # Check for 3 Consecutive Red Candles (SHORT)
-        if c1["close"] < c1["open"] and c2["close"] < c2["open"] and c3["close"] < c3["open"]:
-            # Prior candle must NOT be red (strictly a fresh 3-candle sequence)
-            if c_prev["close"] >= c_prev["open"]:
-                # Ensure none of the 3 candles is a Doji
-                if not cls.is_doji(c1) and not cls.is_doji(c2) and not cls.is_doji(c3):
-                    return "SELL"
+        # Take the last 5 healthy candles
+        target_5 = healthy_candles[-5:]
+        
+        # Latest closed candle must be healthy and part of the sequence
+        if not cls.is_healthy_candle(closed_klines[-1]):
+            return None
+
+        is_5g = all(float(c["close"]) > float(c["open"]) for c in target_5)
+        is_5r = all(float(c["close"]) < float(c["open"]) for c in target_5)
+
+        # 5 Green Candles + Overbought RSI -> SHORT
+        if is_5g and rsi >= config.RSI_OVERBOUGHT:
+            return "SELL"
+
+        # 5 Red Candles + Oversold RSI -> LONG
+        if is_5r and rsi <= config.RSI_OVERSOLD:
+            return "BUY"
 
         return None
