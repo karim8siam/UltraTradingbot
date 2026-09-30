@@ -2,11 +2,14 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#06080d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>UltraQuant | Institutional 10-Core Algorithmic Crypto Trading</title>
+  <title>UltraQuant | 10-Core Algo Trading</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -18,225 +21,267 @@
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            brand: {
-              50: '#ecfeff',
-              400: '#22d3ee',
-              500: '#06b6d4',
-              600: '#0891b2',
-            },
-            accent: {
-              emerald: '#10b981',
-              dark: '#07090e',
-              card: '#0f172a',
-              border: '#1e293b'
-            }
           }
         }
       }
     }
   </script>
   <style>
-    body { background-color: #06080d; color: #f8fafc; }
+    :root { --safe-bottom: env(safe-area-inset-bottom, 0px); }
+    body { background-color: #06080d; color: #f8fafc; -webkit-tap-highlight-color: transparent; }
     .glow-cyan { box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.25); }
-    .glow-emerald { box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.25); }
-    .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glow-emerald { box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.2); }
+    .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
     .glass-card-active { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(6, 182, 212, 0.4); }
+    /* Mobile bottom nav safe area */
+    .mobile-nav { padding-bottom: calc(0.75rem + var(--safe-bottom)); }
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+    /* Prevent body scroll when modal open */
+    body.modal-open { overflow: hidden; }
+    /* Better scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    /* Active tab indicator */
+    .tab-active { color: #22d3ee; position: relative; }
+    .tab-active::after { content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 20px; height: 2px; background: #22d3ee; border-radius: 2px; }
+    /* Pulse dot */
+    @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+    .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+    /* Slide up animation for modals */
+    @keyframes slideUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-inner { animation: slideUp 0.25s ease-out; }
+    /* Input focus ring */
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #22d3ee !important; box-shadow: 0 0 0 3px rgba(6,182,212,0.12); }
   </style>
 </head>
-<body class="font-sans antialiased selection:bg-cyan-500 selection:text-black">
+<body class="font-sans antialiased selection:bg-cyan-500 selection:text-black pb-20 md:pb-0">
 
   <!-- ================= TOP NAVIGATION ================= -->
-  <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-[#06080d]/90 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-          <i class="fa-solid fa-cube text-slate-950 font-black text-xl"></i>
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#06080d]/95 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 flex-shrink-0">
+          <i class="fa-solid fa-cube text-slate-950 font-black text-lg"></i>
         </div>
         <div>
-          <span class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-cyan-400">UltraQuant</span>
-          <span class="ml-2 px-2 py-0.5 text-[10px] font-mono tracking-wider font-semibold rounded bg-cyan-950 text-cyan-400 border border-cyan-800/60 uppercase">10-Core Suite</span>
+          <span class="text-lg md:text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-cyan-400">UltraQuant</span>
+          <span class="hidden sm:inline ml-2 px-2 py-0.5 text-[10px] font-mono tracking-wider font-semibold rounded bg-cyan-950 text-cyan-400 border border-cyan-800/60 uppercase">10-Core</span>
         </div>
       </div>
 
-      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center space-x-7 text-sm font-medium text-slate-300">
         <a href="#engines" class="hover:text-cyan-400 transition">10-Engine Suite</a>
-        <a href="#pricing" class="hover:text-cyan-400 transition">Pricing Plans</a>
-        <a href="#security" class="hover:text-cyan-400 transition">Non-Custodial Security</a>
-        <a href="#stats" class="hover:text-cyan-400 transition">Performance</a>
+        <a href="#pricing" class="hover:text-cyan-400 transition">Pricing</a>
+        <a href="#security" class="hover:text-cyan-400 transition">Security</a>
       </nav>
 
-      <div class="flex items-center space-x-4">
-        <div id="nav-guest" class="flex items-center space-x-3">
-          <button onclick="openAuthModal('login')" class="text-sm font-semibold text-slate-300 hover:text-white px-3 py-2 transition">Sign In</button>
-          <button onclick="openAuthModal('register')" class="text-sm font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 hover:brightness-110 px-5 py-2.5 rounded-xl shadow-md shadow-cyan-500/20 transition">Start Free Trial</button>
-        </div>
-        <div id="nav-user" class="hidden flex items-center space-x-4">
-          <button onclick="scrollToDashboard()" class="text-sm font-semibold text-cyan-400 hover:underline flex items-center">
-            <i class="fa-solid fa-gauge-high mr-2"></i> Dashboard
+      <!-- Desktop Auth Controls -->
+      <div class="flex items-center space-x-3">
+        <div id="nav-guest" class="flex items-center space-x-2">
+          <button onclick="openAuthModal('login')" class="hidden sm:block text-sm font-semibold text-slate-300 hover:text-white px-3 py-2 transition">Sign In</button>
+          <button onclick="openAuthModal('register')" class="text-sm font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 hover:brightness-110 px-4 py-2 md:px-5 md:py-2.5 rounded-xl shadow-md shadow-cyan-500/20 transition whitespace-nowrap">
+            Free Trial
           </button>
-          <button onclick="logout()" class="text-xs text-slate-400 hover:text-rose-400 transition">Sign Out</button>
+        </div>
+        <div id="nav-user" class="hidden flex items-center space-x-3">
+          <button onclick="scrollToDashboard()" class="hidden md:flex text-sm font-semibold text-cyan-400 hover:underline items-center">
+            <i class="fa-solid fa-gauge-high mr-1.5"></i> Dashboard
+          </button>
+          <div class="relative">
+            <button onclick="toggleUserMenu()" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-700/60 to-emerald-700/40 border border-cyan-700/60 flex items-center justify-center">
+              <i class="fa-solid fa-user text-cyan-400 text-sm"></i>
+            </button>
+            <div id="user-dropdown" class="hidden absolute right-0 top-12 w-44 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl py-2 z-50">
+              <div class="px-4 py-2 border-b border-slate-800">
+                <div id="dropdown-email" class="text-xs text-slate-400 font-mono truncate">—</div>
+              </div>
+              <button onclick="scrollToDashboard();toggleUserMenu()" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                <i class="fa-solid fa-gauge-high mr-2 text-cyan-400"></i> Dashboard
+              </button>
+              <button onclick="logout()" class="w-full text-left px-4 py-2.5 text-sm text-rose-400 hover:bg-slate-800 transition">
+                <i class="fa-solid fa-right-from-bracket mr-2"></i> Sign Out
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </header>
 
   <!-- ================= HERO SECTION ================= -->
-  <section class="relative pt-16 pb-20 overflow-hidden">
+  <section class="relative pt-12 pb-16 md:pt-16 md:pb-20 overflow-hidden">
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(6,182,212,0.15),rgba(255,255,255,0))]"></div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-      
-      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-6">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span>24/7 Automated Autonomous Execution</span>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-center">
+
+      <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-5 md:mb-6">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot flex-shrink-0"></span>
+        <span>24/7 Autonomous Execution — All 10 Engines Live</span>
       </div>
 
-      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight">
-        Institutional 10-Engine <br>
-        <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">Algorithmic Trading Platform</span>
+      <h1 class="text-3xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight">
+        Institutional 10-Engine
+        <span class="block bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">Algorithmic Trading</span>
       </h1>
 
-      <p class="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        Connect your Binance or Bybit Futures API. 10 independent quantitative engines execute trades continuously with zero manual effort. Non-custodial, server-side protection, and automatic disconnection.
+      <p class="mt-5 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        Connect your Binance or Bybit Futures API. 10 independent engines trade 24/7. Non-custodial — your funds never leave your exchange.
       </p>
 
-      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <button onclick="openAuthModal('register')" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-base shadow-xl shadow-cyan-500/25 hover:scale-[1.02] transition">
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+        <button onclick="openAuthModal('register')" class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-base shadow-xl shadow-cyan-500/25 hover:brightness-105 active:scale-[0.98] transition">
           <i class="fa-solid fa-bolt mr-2"></i> Start 7-Day Free Trial ($0)
         </button>
-        <a href="#pricing" class="w-full sm:w-auto px-8 py-4 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-slate-200 font-semibold text-base transition">
-          View Subscriptions ($19 / $69)
+        <a href="#pricing" class="w-full sm:w-auto px-7 py-4 rounded-2xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-slate-200 font-semibold text-base transition text-center">
+          View Plans ($19 / $69)
         </a>
       </div>
 
-      <!-- Live Suite Metrics Ribbon -->
-      <div id="stats" class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-        <div class="glass-card p-5 rounded-2xl text-left">
-          <div class="text-xs uppercase font-mono text-slate-400 font-semibold">Decoupled Engines</div>
-          <div class="text-3xl font-extrabold text-white mt-1">10 Active</div>
-          <div class="text-xs text-cyan-400 mt-1"><i class="fa-solid fa-shield-halved mr-1"></i> Isolated Execution</div>
+      <!-- Stats Ribbon -->
+      <div id="stats" class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto">
+        <div class="glass-card p-4 md:p-5 rounded-2xl text-left">
+          <div class="text-xs uppercase font-mono text-slate-400 font-semibold">Engines Active</div>
+          <div class="text-2xl md:text-3xl font-extrabold text-white mt-1">10 Live</div>
+          <div class="text-xs text-cyan-400 mt-1"><i class="fa-solid fa-shield-halved mr-1"></i> Isolated</div>
         </div>
-        <div class="glass-card p-5 rounded-2xl text-left">
-          <div class="text-xs uppercase font-mono text-slate-400 font-semibold">24h Vetted Win Rate</div>
-          <div id="stat-win-rate" class="text-3xl font-extrabold text-emerald-400 mt-1">--%</div>
-          <div class="text-xs text-slate-400 mt-1">Daily Midnight Screener</div>
+        <div class="glass-card p-4 md:p-5 rounded-2xl text-left">
+          <div class="text-xs uppercase font-mono text-slate-400 font-semibold">24h Win Rate</div>
+          <div id="stat-win-rate" class="text-2xl md:text-3xl font-extrabold text-emerald-400 mt-1">--%</div>
+          <div class="text-xs text-slate-400 mt-1">Midnight Screener</div>
         </div>
-        <div class="glass-card p-5 rounded-2xl text-left">
-          <div class="text-xs uppercase font-mono text-slate-400 font-semibold">Risk:Reward Ratio</div>
-          <div class="text-3xl font-extrabold text-white mt-1">1:2 Standard</div>
+        <div class="glass-card p-4 md:p-5 rounded-2xl text-left">
+          <div class="text-xs uppercase font-mono text-slate-400 font-semibold">Risk:Reward</div>
+          <div class="text-2xl md:text-3xl font-extrabold text-white mt-1">1:2</div>
           <div class="text-xs text-emerald-400 mt-1">Server-Side TP/SL</div>
         </div>
-        <div class="glass-card p-5 rounded-2xl text-left">
+        <div class="glass-card p-4 md:p-5 rounded-2xl text-left">
           <div class="text-xs uppercase font-mono text-slate-400 font-semibold">Fund Safety</div>
-          <div class="text-3xl font-extrabold text-cyan-400 mt-1">100% Secure</div>
-          <div class="text-xs text-slate-400 mt-1">Withdrawals Disabled</div>
+          <div class="text-2xl md:text-3xl font-extrabold text-cyan-400 mt-1">100%</div>
+          <div class="text-xs text-slate-400 mt-1">No Withdrawals</div>
         </div>
       </div>
-
     </div>
   </section>
 
   <!-- ================= CLIENT DASHBOARD (AUTHENTICATED) ================= -->
-  <section id="dashboard" class="py-12 border-t border-slate-800/80 bg-[#080b12] hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <!-- User Welcome & Subscription Timer Banner -->
-      <div class="glass-card-active p-6 sm:p-8 rounded-3xl mb-8 flex flex-col md:flex-row items-center justify-between gap-6 glow-cyan">
-        <div>
-          <div class="flex items-center space-x-3">
-            <span class="text-xs font-mono uppercase px-2.5 py-1 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 font-bold" id="dash-tier-badge">7-DAY FREE TRIAL</span>
-            <span class="text-xs font-mono uppercase px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold" id="dash-status-badge">ACTIVE</span>
+  <section id="dashboard" class="py-8 md:py-12 border-t border-slate-800/80 bg-[#080b12] hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+      <!-- Welcome Banner + Timer -->
+      <div class="glass-card-active p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl mb-6 glow-cyan">
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <!-- Left: User info -->
+          <div class="min-w-0">
+            <div class="flex items-center flex-wrap gap-2 mb-2">
+              <span class="text-xs font-mono uppercase px-2.5 py-1 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 font-bold" id="dash-tier-badge">FREE TRIAL</span>
+              <span class="text-xs font-mono uppercase px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold" id="dash-status-badge">ACTIVE</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white truncate">Welcome, <span id="dash-user-email" class="text-cyan-400">Trader</span></h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">All 10 algorithmic cores are synced with your account.</p>
           </div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">Welcome, <span id="dash-user-email">Trader</span></h2>
-          <p class="text-sm text-slate-400 mt-1">All 10 algorithmic cores are synchronized with your account.</p>
+
+          <!-- Right: Countdown Timer -->
+          <div class="flex items-center space-x-2 sm:space-x-3 bg-slate-900/90 border border-slate-700/80 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl self-start sm:self-auto flex-shrink-0">
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl font-mono font-extrabold text-cyan-400" id="timer-days">07</div>
+              <div class="text-[9px] sm:text-[10px] uppercase font-mono text-slate-400">Days</div>
+            </div>
+            <span class="text-xl font-mono text-slate-600">:</span>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl font-mono font-extrabold text-white" id="timer-hours">00</div>
+              <div class="text-[9px] sm:text-[10px] uppercase font-mono text-slate-400">Hrs</div>
+            </div>
+            <span class="text-xl font-mono text-slate-600">:</span>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl font-mono font-extrabold text-white" id="timer-minutes">00</div>
+              <div class="text-[9px] sm:text-[10px] uppercase font-mono text-slate-400">Min</div>
+            </div>
+            <span class="text-xl font-mono text-slate-600">:</span>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl font-mono font-extrabold text-slate-300" id="timer-seconds">00</div>
+              <div class="text-[9px] sm:text-[10px] uppercase font-mono text-slate-400">Sec</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Live Countdown Timer -->
-        <div class="flex items-center space-x-3 bg-slate-900/90 border border-slate-700/80 px-6 py-4 rounded-2xl">
-          <div class="text-center">
-            <div class="text-3xl font-mono font-extrabold text-cyan-400" id="timer-days">07</div>
-            <div class="text-[10px] uppercase font-mono text-slate-400">Days</div>
-          </div>
-          <span class="text-2xl font-mono text-slate-600">:</span>
-          <div class="text-center">
-            <div class="text-3xl font-mono font-extrabold text-white" id="timer-hours">00</div>
-            <div class="text-[10px] uppercase font-mono text-slate-400">Hours</div>
-          </div>
-          <span class="text-2xl font-mono text-slate-600">:</span>
-          <div class="text-center">
-            <div class="text-3xl font-mono font-extrabold text-white" id="timer-minutes">00</div>
-            <div class="text-[10px] uppercase font-mono text-slate-400">Mins</div>
+        <!-- Upgrade Banner (inline in header) -->
+        <div class="mt-4 pt-4 border-t border-cyan-800/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div class="text-xs text-slate-400">Keep trading 24/7 — extend your access anytime before expiry</div>
+          <div class="flex items-center gap-2">
+            <button onclick="handleUpgrade('paid_7d')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold text-xs border border-cyan-700/50 transition">7D — $19</button>
+            <button onclick="handleUpgrade('paid_30d')" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-xs transition">30D — $69</button>
           </div>
         </div>
       </div>
 
-      <!-- Dashboard Main Grid: Exchange Connection & Trade Feed -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Left Column: Exchange Connection Card -->
-        <div class="lg:col-span-5 glass-card p-6 sm:p-8 rounded-3xl">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
-            <h3 class="text-lg font-bold text-white flex items-center">
-              <i class="fa-solid fa-key text-cyan-400 mr-2.5"></i> Exchange Credentials
+      <!-- Main Dashboard Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8">
+
+        <!-- Exchange Connection Card -->
+        <div class="lg:col-span-5 glass-card p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
+            <h3 class="text-base md:text-lg font-bold text-white flex items-center">
+              <i class="fa-solid fa-key text-cyan-400 mr-2"></i> Exchange API
             </h3>
             <span id="exchange-badge" class="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-400">Not Connected</span>
           </div>
 
-          <!-- Connection Form -->
           <form id="connect-exchange-form" onsubmit="handleConnectExchange(event)" autocomplete="off" class="space-y-4">
             <div>
-              <label class="block text-xs font-mono text-slate-400 uppercase mb-1">Target Exchange</label>
-              <select id="conn-exchange" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
+              <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Exchange</label>
+              <select id="conn-exchange" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-sm text-white focus:border-cyan-500 transition">
                 <option value="binance">Binance USDT-M Futures</option>
                 <option value="bybit">Bybit Linear Futures</option>
               </select>
             </div>
-
             <div>
-              <label class="block text-xs font-mono text-slate-400 uppercase mb-1">API Key</label>
-              <input type="text" id="conn-api-key" name="exchange_api_key" required placeholder="" autocomplete="off" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-cyan-500">
+              <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">API Key</label>
+              <input type="text" id="conn-api-key" name="x_api_key" required placeholder="" autocomplete="off" value=""
+                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-sm text-white font-mono focus:border-cyan-500 transition">
             </div>
-
             <div>
-              <label class="block text-xs font-mono text-slate-400 uppercase mb-1">API Secret</label>
-              <input type="password" id="conn-api-secret" name="exchange_api_secret" required placeholder="" autocomplete="new-password" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-cyan-500">
+              <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">API Secret</label>
+              <input type="password" id="conn-api-secret" name="x_api_secret" required placeholder="" autocomplete="new-password" value=""
+                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-sm text-white font-mono focus:border-cyan-500 transition">
             </div>
 
-            <!-- Permission Checklist Guard -->
-            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2 text-xs text-slate-300">
-              <div class="flex items-center text-emerald-400"><i class="fa-solid fa-check-circle mr-2"></i> Enable Futures Trading permission</div>
-              <div class="flex items-center text-emerald-400"><i class="fa-solid fa-check-circle mr-2"></i> Enable Reading & Position management</div>
-              <div class="flex items-center text-rose-400 font-semibold"><i class="fa-solid fa-ban mr-2"></i> DO NOT enable Withdrawal permission</div>
+            <!-- Permission Guard -->
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2 text-xs text-slate-300">
+              <div class="flex items-center text-emerald-400"><i class="fa-solid fa-check-circle mr-2 w-4"></i> Enable Futures Trading</div>
+              <div class="flex items-center text-emerald-400"><i class="fa-solid fa-check-circle mr-2 w-4"></i> Enable Reading & Position management</div>
+              <div class="flex items-center text-rose-400 font-semibold"><i class="fa-solid fa-ban mr-2 w-4"></i> DO NOT enable Withdrawals</div>
             </div>
 
-            <button type="submit" id="btn-connect-exchange" class="w-full py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm transition">
+            <button type="submit" id="btn-connect-exchange" class="w-full py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 text-slate-950 font-bold text-sm transition">
               <i class="fa-solid fa-plug mr-1.5"></i> Verify & Connect Account
             </button>
           </form>
 
           <div id="conn-feedback" class="mt-4 hidden p-4 rounded-xl text-xs font-mono"></div>
 
-          <!-- Disconnect Button -->
-          <div id="conn-active-controls" class="mt-6 pt-6 border-t border-slate-800 hidden">
+          <!-- Connected State -->
+          <div id="conn-active-controls" class="mt-5 pt-5 border-t border-slate-800 hidden">
             <div class="flex items-center justify-between text-sm mb-3">
-              <span class="text-slate-400">Account Futures Balance:</span>
+              <span class="text-slate-400">Futures Balance:</span>
               <span id="conn-balance" class="font-mono font-bold text-emerald-400">$0.00 USDT</span>
             </div>
-            <button onclick="handleDisconnectExchange()" class="w-full py-2.5 rounded-xl border border-rose-900/60 bg-rose-950/20 text-rose-400 hover:bg-rose-900/30 font-semibold text-xs transition">
+            <button onclick="promptDisconnect()" class="w-full py-3 rounded-xl border border-rose-900/60 bg-rose-950/20 text-rose-400 hover:bg-rose-900/30 font-semibold text-xs transition active:scale-[0.98]">
               <i class="fa-solid fa-power-off mr-1.5"></i> Disconnect Bot & Stop Trading
             </button>
           </div>
         </div>
 
-        <!-- Right Column: Live Executed Trade Telemetry -->
-        <div class="lg:col-span-7 glass-card p-6 sm:p-8 rounded-3xl">
+        <!-- Live Trade Stream -->
+        <div class="lg:col-span-7 glass-card p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl">
           <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
             <div>
-              <h3 class="text-lg font-bold text-white flex items-center">
-                <i class="fa-solid fa-chart-line text-emerald-400 mr-2.5"></i> Live Trade Stream
+              <h3 class="text-base md:text-lg font-bold text-white flex items-center">
+                <i class="fa-solid fa-chart-line text-emerald-400 mr-2"></i> Live Trade Stream
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">Automated orders placed across the 10 decoupled engines.</p>
+              <p class="text-xs text-slate-400 mt-0.5">Automated orders across all 10 decoupled engines.</p>
             </div>
             <div class="text-right">
               <div class="text-xs font-mono text-slate-400">Session PnL</div>
@@ -244,206 +289,179 @@
             </div>
           </div>
 
-          <!-- Trade Table -->
-          <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
-            <table class="w-full text-left text-xs font-mono">
+          <!-- Trade Table — scrollable on mobile -->
+          <div class="overflow-x-auto max-h-[340px] overflow-y-auto -mx-2 px-2">
+            <table class="w-full text-left text-xs font-mono min-w-[480px]">
               <thead class="text-slate-400 uppercase bg-slate-900/50 sticky top-0">
                 <tr>
-                  <th class="py-2.5 px-3">Engine Core</th>
+                  <th class="py-2.5 px-3">Engine</th>
                   <th class="py-2.5 px-3">Pair</th>
                   <th class="py-2.5 px-3">Side</th>
-                  <th class="py-2.5 px-3">Entry Price</th>
-                  <th class="py-2.5 px-3 text-right">PnL (USD)</th>
+                  <th class="py-2.5 px-3">Entry</th>
+                  <th class="py-2.5 px-3 text-right">PnL</th>
                 </tr>
               </thead>
               <tbody id="trade-log-rows" class="divide-y divide-slate-800/60 text-slate-200">
                 <tr>
                   <td colspan="5" class="py-12 text-center text-slate-500 font-sans">
                     <i class="fa-solid fa-chart-line text-2xl mb-2 block text-slate-600"></i>
-                    No live trades executed yet.<br>
-                    <span class="text-[11px] text-slate-500">Connect your exchange API keys above to begin receiving automated trades from all 10 engines.</span>
+                    No live trades yet.<br>
+                    <span class="text-[11px] text-slate-500">Connect your API key to receive automated trades from all 10 engines.</span>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-
-          <!-- Upgrade Banner in Dashboard -->
-          <div class="mt-6 p-4 rounded-2xl bg-gradient-to-r from-cyan-950/40 to-slate-900 border border-cyan-800/40 flex items-center justify-between">
-            <div>
-              <div class="text-xs font-bold text-white">Extend Your Automated Access</div>
-              <div class="text-[11px] text-slate-400">Keep trading 24/7 without interruption when your trial ends.</div>
-            </div>
-            <div class="flex items-center space-x-2">
-              <button onclick="handleUpgrade('paid_7d')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold text-xs border border-cyan-700/50 transition">7D ($19)</button>
-              <button onclick="handleUpgrade('paid_30d')" class="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition">30D ($69)</button>
-            </div>
-          </div>
         </div>
 
       </div>
-
     </div>
   </section>
 
-  <!-- ================= 10-ENGINE ARCHITECTURE OVERVIEW (ZERO STRATEGY LEAKS) ================= -->
-  <section id="engines" class="py-20 border-t border-slate-800/80 bg-[#06080d]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-16">
+  <!-- ================= 10-ENGINE SUITE ================= -->
+  <section id="engines" class="py-16 md:py-20 border-t border-slate-800/80 bg-[#06080d]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
         <h2 class="text-xs font-mono uppercase tracking-widest text-cyan-400 font-bold mb-3">Institutional Architecture</h2>
-        <p class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">The 10-Core Multi-Regime Advantage</p>
-        <p class="mt-4 text-slate-400 text-base">Each core operates in complete isolation with independent memory, execution gates, and risk parameters. A network anomaly in one core never affects the remaining nine.</p>
+        <p class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">The 10-Core Multi-Regime Advantage</p>
+        <p class="mt-4 text-slate-400 text-sm md:text-base">Each core operates in complete isolation with independent memory, execution gates, and risk parameters.</p>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
           <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">01</div>
-          <h3 class="text-lg font-bold text-white">Core Alpha: Multi-Regime Neural</h3>
-          <p class="text-sm text-slate-400 mt-2">Continuously detects trending, mean-reverting, and volatile market phases. Employs ensemble meta-classification to adapt entries dynamically.</p>
-          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 5M / 15M / 1H • 1:2 R:R</div>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Alpha: Multi-Regime Neural</h3>
+          <p class="text-sm text-slate-400 mt-2">Continuously detects trending, mean-reverting, and volatile market phases. Ensemble meta-classification adapts entries dynamically.</p>
+          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 5M / 15M / 1H · 1:2 R:R</div>
         </div>
-
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
           <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">02</div>
-          <h3 class="text-lg font-bold text-white">Core Beta: 3-Candle Velocity</h3>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Beta: 3-Candle Velocity</h3>
           <p class="text-sm text-slate-400 mt-2">Captures high-volume momentum bursts following three consecutive institutional order-flow expansions with fixed time-exit constraints.</p>
-          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 15M • 30-Minute Hold</div>
+          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 15M · 30-Minute Hold</div>
         </div>
-
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
           <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">03</div>
-          <h3 class="text-lg font-bold text-white">Core Gamma: 10-Point Scalper</h3>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Gamma: 10-Point Scalper</h3>
           <p class="text-sm text-slate-400 mt-2">Evaluates an institutional 10-point confluence checklist before triggering entries, backed by 1.55x / 3.10x ATR brackets.</p>
-          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 30M / 15M • Strict 1:2 R:R</div>
+          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 30M / 15M · Strict 1:2 R:R</div>
         </div>
-
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
           <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">04</div>
-          <h3 class="text-lg font-bold text-white">Core Delta: Momentum Reversal</h3>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Delta: Momentum Reversal</h3>
           <p class="text-sm text-slate-400 mt-2">Identifies exhaustive directional runs and captures early mean-reversion impulses when technical boundaries indicate severe exhaustion.</p>
-          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 15M • 45-Minute Hold</div>
+          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 15M · 45-Minute Hold</div>
         </div>
-
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
           <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">05</div>
-          <h3 class="text-lg font-bold text-white">Core Epsilon: Deterministic SMC</h3>
-          <p class="text-sm text-slate-400 mt-2">4-stage liquidity cascade: multi-timeframe swing mapping $\to$ liquidity sweep $\to$ market structure shift $\to$ discount/premium mitigation.</p>
-          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 4H $\to$ 1H $\to$ 15M $\to$ 5M</div>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Epsilon: Deterministic SMC</h3>
+          <p class="text-sm text-slate-400 mt-2">4-stage liquidity cascade: multi-timeframe swing mapping → liquidity sweep → market structure shift → discount/premium mitigation.</p>
+          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 4H → 1H → 15M → 5M</div>
         </div>
-
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
           <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">06</div>
-          <h3 class="text-lg font-bold text-white">Core Zeta: Golden Fibonacci</h3>
-          <p class="text-sm text-slate-400 mt-2">Zero-lookahead swing measurement identifying precise high-velocity displacement moves with retracements into institutional golden pockets.</p>
-          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 4H / 15M / 5M • Min 1:2 R:R</div>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Zeta: Golden Fibonacci</h3>
+          <p class="text-sm text-slate-400 mt-2">Zero-lookahead swing measurement identifying high-velocity displacement moves with retracements into institutional golden pockets.</p>
+          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 4H / 15M / 5M · Min 1:2 R:R</div>
         </div>
-
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
           <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">07</div>
-          <h3 class="text-lg font-bold text-white">Core Eta: Institutional FVG</h3>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Eta: Institutional FVG</h3>
           <p class="text-sm text-slate-400 mt-2">Trades Fair Value Gaps formed by institutional displacement bodies, waiting for 5M structure confirmation before execution.</p>
-          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 4H $\to$ 15M $\to$ 5M • 1:2 R:R</div>
+          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 4H → 15M → 5M · 1:2 R:R</div>
         </div>
-
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
           <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">08</div>
-          <h3 class="text-lg font-bold text-white">Core Theta: Triple Horizon (GFS)</h3>
-          <p class="text-sm text-slate-400 mt-2">Triple-horizon macro trend: 1D macro bias establishes permission, 4H determines value pullback zones, and 15M executes precision entries.</p>
-          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 1D $\to$ 4H $\to$ 15M</div>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Theta: Triple Horizon (GFS)</h3>
+          <p class="text-sm text-slate-400 mt-2">Triple-horizon macro trend: 1D macro bias establishes permission, 4H determines pullback zones, 15M executes precision entries.</p>
+          <div class="mt-4 text-xs font-mono text-cyan-400">TF: 1D → 4H → 15M</div>
         </div>
-
-        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/40 transition">
-          <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">09-10</div>
-          <h3 class="text-lg font-bold text-white">Core Iota & Kappa: Swings & 100P</h3>
+        <div class="glass-card p-5 md:p-6 rounded-2xl hover:border-cyan-500/40 transition">
+          <div class="w-10 h-10 rounded-xl bg-cyan-950 text-cyan-400 flex items-center justify-center font-mono font-bold mb-4 border border-cyan-800/60">09–10</div>
+          <h3 class="text-base md:text-lg font-bold text-white">Core Iota & Kappa: Swings & 100P</h3>
           <p class="text-sm text-slate-400 mt-2">Combines multi-day macro systematic swing capture with ultra-high-throughput 100-pair 15-second scanning loops.</p>
           <div class="mt-4 text-xs font-mono text-cyan-400">100-Pair Scan & Macro Swings</div>
         </div>
-
       </div>
     </div>
   </section>
 
   <!-- ================= PRICING SECTION ================= -->
-  <section id="pricing" class="py-20 border-t border-slate-800/80 bg-[#080b12]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-16">
+  <section id="pricing" class="py-16 md:py-20 border-t border-slate-800/80 bg-[#080b12]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
         <h2 class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold mb-3">Transparent Subscriptions</h2>
-        <p class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Zero Commissions. Pure Access.</p>
-        <p class="mt-4 text-slate-400 text-base">You keep 100% of your trading profits. We charge zero percentage fees. Simply connect your exchange API key and let the suite run.</p>
+        <p class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">Zero Commissions. Pure Access.</p>
+        <p class="mt-4 text-slate-400 text-sm md:text-base">You keep 100% of your profits. Connect your API key, we handle the rest.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
-        
-        <!-- Tier 1: 7-Day Free Trial -->
-        <div class="glass-card p-8 rounded-3xl flex flex-col justify-between border-slate-800">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8 max-w-6xl mx-auto items-stretch">
+
+        <!-- Free Trial -->
+        <div class="glass-card p-6 md:p-8 rounded-2xl md:rounded-3xl flex flex-col justify-between border-slate-800">
           <div>
             <div class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">New Traders</div>
-            <h3 class="text-2xl font-bold text-white mt-1">7-Day Free Trial</h3>
-            <div class="mt-6 flex items-baseline">
-              <span class="text-5xl font-black text-white">$0</span>
+            <h3 class="text-xl md:text-2xl font-bold text-white mt-1">7-Day Free Trial</h3>
+            <div class="mt-5 flex items-baseline">
+              <span class="text-4xl md:text-5xl font-black text-white">$0</span>
               <span class="text-slate-400 ml-2 text-sm">/ 7 days</span>
             </div>
-            <p class="mt-4 text-xs text-slate-400">Full algorithmic access to test the suite on your account with zero commitment.</p>
-            
-            <ul class="mt-6 space-y-3 text-sm text-slate-300">
-              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5"></i> All 10 Cores Active</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5"></i> Binance & Bybit Support</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5"></i> 24h Daily Screener (50%+ WR)</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5"></i> Auto-Disconnect on Expiry</li>
+            <p class="mt-3 text-xs text-slate-400">Full algorithmic access to test the suite on your account with zero commitment.</p>
+            <ul class="mt-5 space-y-2.5 text-sm text-slate-300">
+              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5 w-4"></i> All 10 Cores Active</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5 w-4"></i> Binance & Bybit Support</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5 w-4"></i> 24h Daily Screener (50%+ WR)</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5 w-4"></i> Auto-Disconnect on Expiry</li>
             </ul>
           </div>
-          <button onclick="openAuthModal('register')" class="mt-8 w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition">
+          <button onclick="openAuthModal('register')" class="mt-7 w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-sm transition">
             Start Free Trial ($0)
           </button>
         </div>
 
-        <!-- Tier 2: Weekly Access ($19) -->
-        <div class="glass-card p-8 rounded-3xl flex flex-col justify-between border-cyan-800/60">
+        <!-- Weekly $19 -->
+        <div class="glass-card p-6 md:p-8 rounded-2xl md:rounded-3xl flex flex-col justify-between border-cyan-800/60">
           <div>
-            <div class="text-xs font-mono uppercase tracking-wider text-cyan-400 font-bold">Weekly Flexibility</div>
-            <h3 class="text-2xl font-bold text-white mt-1">7-Day Full Access</h3>
-            <div class="mt-6 flex items-baseline">
-              <span class="text-5xl font-black text-white">$19</span>
+            <div class="text-xs font-mono uppercase tracking-wider text-cyan-400 font-bold">Weekly Access</div>
+            <h3 class="text-xl md:text-2xl font-bold text-white mt-1">7-Day Full Access</h3>
+            <div class="mt-5 flex items-baseline">
+              <span class="text-4xl md:text-5xl font-black text-white">$19</span>
               <span class="text-slate-400 ml-2 text-sm">/ 7 days</span>
             </div>
-            <p class="mt-4 text-xs text-slate-400">Ideal for weekly market regimes and quick capital ramp-up without long commitments.</p>
-            
-            <ul class="mt-6 space-y-3 text-sm text-slate-300">
-              <li class="flex items-center"><i class="fa-solid fa-check text-cyan-400 mr-2.5"></i> All 10 Cores Active</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-cyan-400 mr-2.5"></i> Binance & Bybit Support</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-cyan-400 mr-2.5"></i> High-Speed 15s Confluence Scanner</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-cyan-400 mr-2.5"></i> Priority Execution Routing</li>
+            <p class="mt-3 text-xs text-slate-400">Ideal for weekly market regimes and quick capital ramp-up.</p>
+            <ul class="mt-5 space-y-2.5 text-sm text-slate-300">
+              <li class="flex items-center"><i class="fa-solid fa-check text-cyan-400 mr-2.5 w-4"></i> All 10 Cores Active</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-cyan-400 mr-2.5 w-4"></i> Binance & Bybit Support</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-cyan-400 mr-2.5 w-4"></i> High-Speed 15s Confluence Scanner</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-cyan-400 mr-2.5 w-4"></i> Priority Execution Routing</li>
             </ul>
           </div>
-          <button onclick="handleSubscribePlan('paid_7d')" class="mt-8 w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-cyan-500/40 font-bold text-sm transition">
-            Get Weekly Pass ($19)
+          <button onclick="handleSubscribePlan('paid_7d')" class="mt-7 w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-cyan-500/40 font-bold text-sm transition">
+            Get Weekly Pass ($19) — BEP20
           </button>
         </div>
 
-        <!-- Tier 3: Monthly Pro ($69) - Featured -->
-        <div class="glass-card-active p-8 rounded-3xl flex flex-col justify-between relative glow-cyan">
-          <div class="absolute -top-3 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-[10px] uppercase tracking-wider">
-            Most Popular (Best Value)
+        <!-- Monthly $69 - Featured -->
+        <div class="glass-card-active p-6 md:p-8 rounded-2xl md:rounded-3xl flex flex-col justify-between relative glow-cyan">
+          <div class="absolute -top-3 right-5 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-[10px] uppercase tracking-wider">
+            Best Value
           </div>
           <div>
             <div class="text-xs font-mono uppercase tracking-wider text-emerald-400 font-bold">Institutional Pro</div>
-            <h3 class="text-2xl font-bold text-white mt-1">30-Day Pro Access</h3>
-            <div class="mt-6 flex items-baseline">
-              <span class="text-5xl font-black text-white">$69</span>
+            <h3 class="text-xl md:text-2xl font-bold text-white mt-1">30-Day Pro Access</h3>
+            <div class="mt-5 flex items-baseline">
+              <span class="text-4xl md:text-5xl font-black text-white">$69</span>
               <span class="text-slate-400 ml-2 text-sm">/ 30 days</span>
             </div>
-            <p class="mt-4 text-xs text-slate-400">Save 20% compared to weekly. Uninterrupted 24/7 continuous trading across all market cycles.</p>
-            
-            <ul class="mt-6 space-y-3 text-sm text-slate-300">
-              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5"></i> All 10 Cores Active 24/7</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5"></i> Binance & Bybit Unlimited Pairs</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5"></i> Trailing 24h Screener (50%+ WR)</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5"></i> Max Concurrency & Sizing Optimization</li>
+            <p class="mt-3 text-xs text-slate-400">Save 20% vs weekly. Uninterrupted 24/7 trading across all market cycles.</p>
+            <ul class="mt-5 space-y-2.5 text-sm text-slate-300">
+              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5 w-4"></i> All 10 Cores Active 24/7</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5 w-4"></i> Binance & Bybit Unlimited Pairs</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5 w-4"></i> Trailing 24h Screener (50%+ WR)</li>
+              <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2.5 w-4"></i> Max Concurrency & Sizing Optimization</li>
             </ul>
           </div>
-          <button onclick="handleSubscribePlan('paid_30d')" class="mt-8 w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 hover:brightness-110 transition">
-            Get 30-Day Pro ($69)
+          <button onclick="handleSubscribePlan('paid_30d')" class="mt-7 w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 hover:brightness-110 transition">
+            Get 30-Day Pro ($69) — BEP20
           </button>
         </div>
 
@@ -451,36 +469,136 @@
     </div>
   </section>
 
+  <!-- ================= SECURITY SECTION ================= -->
+  <section id="security" class="py-16 md:py-20 border-t border-slate-800/80 bg-[#06080d]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-rose-400 font-bold mb-3">Non-Custodial Architecture</h2>
+        <p class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">Your Funds Always Remain Yours</p>
+        <p class="mt-4 text-slate-400 text-sm">We only execute orders. We cannot withdraw. We cannot move your funds. Period.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-4xl mx-auto">
+        <div class="glass-card p-5 md:p-6 rounded-2xl text-center">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-950 border border-emerald-800 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-shield-halved text-emerald-400 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white mb-2">No Withdrawal Access</h4>
+          <p class="text-xs text-slate-400">API keys without withdrawal permission are strictly enforced — any key with withdrawal enabled is automatically rejected at connection time.</p>
+        </div>
+        <div class="glass-card p-5 md:p-6 rounded-2xl text-center">
+          <div class="w-12 h-12 rounded-2xl bg-cyan-950 border border-cyan-800 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-lock text-cyan-400 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white mb-2">AES-256 Encryption</h4>
+          <p class="text-xs text-slate-400">Your API keys are encrypted with AES-256-GCM at rest. They are never stored in plain text and never transmitted to third parties.</p>
+        </div>
+        <div class="glass-card p-5 md:p-6 rounded-2xl text-center">
+          <div class="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-power-off text-rose-400 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white mb-2">Instant Disconnect</h4>
+          <p class="text-xs text-slate-400">Subscription expired? Disconnect yourself any time. The moment your plan ends, all 10 engines automatically cease operation on your account.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-slate-800 bg-[#06080d] py-10 md:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+      <div class="flex items-center justify-center space-x-2.5 mb-4">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-600 to-emerald-400 flex items-center justify-center">
+          <i class="fa-solid fa-cube text-slate-950 text-sm font-black"></i>
+        </div>
+        <span class="font-bold text-white">UltraQuant</span>
+        <span class="text-xs font-mono text-cyan-400 border border-cyan-800/50 bg-cyan-950/40 px-2 py-0.5 rounded">10-Core Suite</span>
+      </div>
+      <p class="text-xs text-slate-500 max-w-xl mx-auto">Algorithmic trading involves significant risk. Past performance does not guarantee future results. Trade only with capital you can afford to lose. UltraQuant is not a financial advisor.</p>
+    </div>
+  </footer>
+
+  <!-- ================= MOBILE BOTTOM NAVIGATION ================= -->
+  <nav id="mobile-bottom-nav" class="mobile-nav md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#06080d]/95 backdrop-blur-md border-t border-slate-800 flex items-stretch">
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="flex-1 flex flex-col items-center justify-center py-3 text-slate-400 hover:text-white transition min-h-[56px]">
+      <i class="fa-solid fa-house text-base mb-1"></i>
+      <span class="text-[10px] font-mono">Home</span>
+    </button>
+    <div id="mob-nav-auth" class="flex-1 flex flex-col items-center justify-center py-3 text-slate-400 min-h-[56px]">
+      <button onclick="openAuthModal('login')" class="flex flex-col items-center w-full">
+        <i class="fa-solid fa-right-to-bracket text-base mb-1"></i>
+        <span class="text-[10px] font-mono">Sign In</span>
+      </button>
+    </div>
+    <div id="mob-nav-dashboard" class="flex-1 hidden flex-col items-center justify-center py-3 min-h-[56px]">
+      <button onclick="scrollToDashboard()" class="flex flex-col items-center w-full text-cyan-400">
+        <i class="fa-solid fa-gauge-high text-base mb-1"></i>
+        <span class="text-[10px] font-mono">Dashboard</span>
+      </button>
+    </div>
+    <a href="#pricing" class="flex-1 flex flex-col items-center justify-center py-3 text-slate-400 hover:text-white transition min-h-[56px]">
+      <i class="fa-solid fa-tag text-base mb-1"></i>
+      <span class="text-[10px] font-mono">Plans</span>
+    </a>
+    <div id="mob-nav-logout" class="flex-1 hidden flex-col items-center justify-center py-3 text-rose-400 min-h-[56px]">
+      <button onclick="logout()" class="flex flex-col items-center w-full">
+        <i class="fa-solid fa-right-from-bracket text-base mb-1"></i>
+        <span class="text-[10px] font-mono">Sign Out</span>
+      </button>
+    </div>
+    <a href="#security" class="flex-1 flex flex-col items-center justify-center py-3 text-slate-400 hover:text-white transition min-h-[56px]" id="mob-nav-security">
+      <i class="fa-solid fa-shield-halved text-base mb-1"></i>
+      <span class="text-[10px] font-mono">Security</span>
+    </a>
+  </nav>
+
   <!-- ================= AUTH MODAL ================= -->
-  <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
-    <div class="glass-card-active p-8 rounded-3xl max-w-md w-full mx-4 relative">
-      <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      
-      <h3 id="auth-title" class="text-2xl font-bold text-white mb-2">Create Your Account</h3>
-      <p id="auth-subtitle" class="text-xs text-slate-400 mb-6">Start your 7-day free trial with full 10-core access.</p>
+  <div id="auth-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+    <div class="modal-inner glass-card-active p-6 sm:p-8 rounded-t-3xl sm:rounded-3xl max-w-md w-full relative">
+      <button onclick="closeAuthModal()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Logo mini -->
+      <div class="flex items-center space-x-2 mb-5">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-600 to-emerald-400 flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-cube text-slate-950 text-xs font-black"></i>
+        </div>
+        <span class="text-sm font-bold text-white">UltraQuant</span>
+      </div>
+
+      <h3 id="auth-title" class="text-xl sm:text-2xl font-bold text-white mb-1">Create Your Account</h3>
+      <p id="auth-subtitle" class="text-xs text-slate-400 mb-5">Start your 7-day free trial with full 10-core access.</p>
 
       <form id="auth-form" onsubmit="handleAuthSubmit(event)" autocomplete="off" class="space-y-4">
         <div id="auth-name-container">
-          <label class="block text-xs font-mono text-slate-400 uppercase mb-1">Full Name</label>
-          <input type="text" id="auth-name" name="new_full_name" placeholder="" autocomplete="off" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
+          <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Full Name</label>
+          <input type="text" id="auth-name" name="x_full_name" placeholder="" autocomplete="off" value=""
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-sm text-white focus:border-cyan-500 transition">
         </div>
         <div>
-          <label class="block text-xs font-mono text-slate-400 uppercase mb-1">Email Address</label>
-          <input type="email" id="auth-email" name="new_user_email" required placeholder="" autocomplete="off" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
+          <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Email Address</label>
+          <input type="email" id="auth-email" name="x_user_email" required placeholder="" autocomplete="off" value=""
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-sm text-white focus:border-cyan-500 transition">
         </div>
         <div>
-          <label class="block text-xs font-mono text-slate-400 uppercase mb-1">Password</label>
-          <input type="password" id="auth-password" name="new_user_password" required placeholder="" autocomplete="new-password" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
+          <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Password</label>
+          <div class="relative">
+            <input type="password" id="auth-password" name="x_user_password" required placeholder="" autocomplete="new-password" value=""
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-sm text-white font-mono focus:border-cyan-500 transition pr-12">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 px-1">
+              <i id="pw-eye-icon" class="fa-solid fa-eye text-sm"></i>
+            </button>
+          </div>
         </div>
 
-        <button type="submit" id="auth-submit-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-md transition">
+        <button type="submit" id="auth-submit-btn" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-md transition active:scale-[0.98]">
           Start 7-Day Free Trial ($0)
         </button>
       </form>
 
-      <div id="auth-error" class="mt-4 p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-400 text-xs hidden"></div>
+      <div id="auth-error" class="mt-3 p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-400 text-xs hidden"></div>
 
-      <div class="mt-6 text-center text-xs text-slate-400">
+      <div class="mt-5 text-center text-xs text-slate-400">
         <span id="auth-toggle-msg">Already have an account?</span>
         <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-cyan-400 font-semibold hover:underline ml-1">Sign In</button>
       </div>
@@ -488,65 +606,65 @@
   </div>
 
   <!-- ================= BEP20 PAYMENT MODAL ================= -->
-  <div id="payment-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden">
-    <div class="glass-card-active p-6 sm:p-8 rounded-3xl max-w-lg w-full mx-4 relative glow-cyan max-h-[90vh] overflow-y-auto">
-      <button onclick="closePaymentModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+  <div id="payment-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-md hidden">
+    <div class="modal-inner glass-card-active p-5 sm:p-6 md:p-8 rounded-t-3xl sm:rounded-3xl max-w-lg w-full relative max-h-[92vh] overflow-y-auto glow-cyan">
+      <button onclick="closePaymentModal()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
 
       <div class="flex items-center space-x-2 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider mb-2">
         <i class="fa-solid fa-wallet text-sm"></i>
         <span>BNB Smart Chain (BEP20) Gateway</span>
       </div>
 
-      <h3 id="pay-modal-title" class="text-2xl font-bold text-white mb-1">Upgrade Subscription</h3>
-      <p id="pay-modal-subtitle" class="text-xs text-slate-400 mb-6">Send payment to activate automated 24/7 algorithmic trading.</p>
+      <h3 class="text-xl sm:text-2xl font-bold text-white mb-1">Activate Subscription</h3>
+      <p class="text-xs text-slate-400 mb-5">Send payment to activate automated 24/7 algorithmic trading.</p>
 
-      <!-- Amount & Plan Badge Box -->
-      <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 mb-6 flex items-center justify-between">
+      <!-- Plan Badge -->
+      <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 mb-5 flex items-center justify-between">
         <div>
           <span class="text-xs text-slate-400 uppercase font-mono block">Selected Plan</span>
           <span id="pay-plan-name" class="text-sm font-bold text-white">7-Day Weekly Pass</span>
         </div>
         <div class="text-right">
-          <span class="text-xs text-slate-400 uppercase font-mono block">Amount Due</span>
+          <span class="text-xs text-slate-400 uppercase font-mono block">Amount</span>
           <span id="pay-plan-price" class="text-xl font-mono font-extrabold text-cyan-400">$19.00 USDT</span>
         </div>
       </div>
 
-      <!-- Deposit Instructions -->
-      <div class="space-y-4 mb-6">
+      <!-- Send to Address -->
+      <div class="space-y-4 mb-5">
         <div>
-          <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5 flex items-center justify-between">
-            <span>Send Payment to this BEP20 Address</span>
-            <span class="text-[11px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> BSC (BEP20) Only</span>
+          <label class="block text-xs font-mono text-slate-400 uppercase mb-2 flex items-center justify-between">
+            <span>Send to BEP20 Address</span>
+            <span class="text-[11px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> BSC Only</span>
           </label>
           <div class="flex items-center space-x-2 bg-slate-950 border border-cyan-800/60 rounded-xl p-3">
-            <span id="pay-target-address" class="text-xs sm:text-sm font-mono text-cyan-300 break-all select-all flex-1">0x66A06fA03BE98383fe4F73a5f1783332CAC0F5A0</span>
-            <button onclick="copyPaymentAddress()" id="btn-copy-address" class="px-3 py-1.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 border border-cyan-700 text-cyan-400 font-mono text-xs font-bold transition flex items-center whitespace-nowrap">
+            <span id="pay-target-address" class="text-[11px] sm:text-xs font-mono text-cyan-300 break-all select-all flex-1">0x66A06fA03BE98383fe4F73a5f1783332CAC0F5A0</span>
+            <button onclick="copyPaymentAddress()" id="btn-copy-address" class="px-3 py-1.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 border border-cyan-700 text-cyan-400 font-mono text-xs font-bold transition flex items-center whitespace-nowrap flex-shrink-0">
               <i class="fa-regular fa-copy mr-1.5"></i> Copy
             </button>
           </div>
         </div>
 
-        <!-- Accepted Tokens -->
+        <!-- Accepted tokens badge -->
         <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs flex items-center justify-between">
           <div class="flex items-center text-slate-300">
             <i class="fa-solid fa-coins text-cyan-400 mr-2"></i>
-            <span>Accepted Tokens: <strong class="text-white">USDT</strong> or <strong class="text-white">USDC</strong> (BEP20)</span>
+            <span>Accepted: <strong class="text-white">USDT</strong> or <strong class="text-white">USDC</strong> (BEP20)</span>
           </div>
-          <span class="text-[11px] text-emerald-400 font-mono"><i class="fa-solid fa-bolt mr-1"></i> Instant On-Chain</span>
+          <span class="text-[11px] text-emerald-400 font-mono ml-2"><i class="fa-solid fa-bolt mr-1"></i> On-Chain</span>
         </div>
 
-        <!-- Transaction Hash Input Form -->
-        <form id="pay-verify-form" onsubmit="handleVerifyPaymentTx(event)" autocomplete="off" class="space-y-4">
+        <!-- TxID Form -->
+        <form id="pay-verify-form" onsubmit="handleVerifyPaymentTx(event)" autocomplete="off" class="space-y-3">
           <div>
-            <label class="block text-xs font-mono text-slate-400 uppercase mb-1">
-              Transaction Hash (TxID)
-            </label>
-            <input type="text" id="pay-tx-hash" required placeholder="" autocomplete="off" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs sm:text-sm font-mono text-white focus:outline-none focus:border-cyan-500">
-            <span class="text-[10px] text-slate-500 mt-1 block">Paste your 66-character transaction hash from MetaMask or exchange withdrawal history.</span>
+            <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Transaction Hash (TxID)</label>
+            <input type="text" id="pay-tx-hash" required placeholder="" autocomplete="off" value=""
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-xs sm:text-sm font-mono text-white focus:border-cyan-500 transition">
+            <span class="text-[10px] text-slate-500 mt-1 block">Paste the 66-character transaction hash from MetaMask or your exchange withdrawal history.</span>
           </div>
-
-          <button type="submit" id="btn-verify-tx" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-md transition flex items-center justify-center">
+          <button type="submit" id="btn-verify-tx" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-md transition flex items-center justify-center active:scale-[0.98]">
             <i class="fa-solid fa-magnifying-glass-chart mr-2"></i>
             <span>Verify on Blockchain & Activate</span>
           </button>
@@ -554,25 +672,75 @@
 
         <div id="pay-feedback" class="hidden p-4 rounded-xl text-xs font-mono"></div>
       </div>
-
     </div>
   </div>
 
-  <!-- ================= SCRIPTS & API GLUE ================= -->
+  <!-- ================= INLINE CONFIRM DIALOG (replaces browser confirm()) ================= -->
+  <div id="confirm-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden px-4">
+    <div class="modal-inner glass-card-active p-6 rounded-2xl max-w-sm w-full">
+      <div class="flex items-start space-x-3 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-rose-950 border border-rose-800 flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
+        </div>
+        <div>
+          <div class="font-bold text-white text-sm" id="confirm-title">Are you sure?</div>
+          <div class="text-xs text-slate-400 mt-1" id="confirm-message">This action cannot be undone.</div>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="confirmCancel()" class="flex-1 py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition">Cancel</button>
+        <button onclick="confirmOk()" id="confirm-ok-btn" class="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm transition">Disconnect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION ================= -->
+  <div id="toast" class="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-[70] hidden">
+    <div class="bg-slate-800 border border-slate-700 text-white text-sm font-semibold px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-2 whitespace-nowrap">
+      <i id="toast-icon" class="fa-solid fa-check text-emerald-400"></i>
+      <span id="toast-msg">Done!</span>
+    </div>
+  </div>
+
+
+  <!-- ================= SCRIPTS ================= -->
   <script>
-    let authMode = 'register'; // 'register' or 'login'
+    /* ——— State ——— */
+    let authMode = 'register';
     let authToken = localStorage.getItem('ultra_auth_token');
     let currentUser = null;
     let countdownInterval = null;
+    let confirmCallback = null;
 
-    // Initialize application
+    /* ——— Boot ——— */
     window.addEventListener('DOMContentLoaded', () => {
       loadPlatformStats();
+      // Persistent session: silently restore if token exists
       if (authToken) {
-        checkAuthProfile();
+        checkAuthProfile().then(() => {
+          // After restoring auth, if user lands on page scroll to dashboard
+          const hash = window.location.hash;
+          if (!hash || hash === '#' ) {
+            setTimeout(() => {
+              const dash = document.getElementById('dashboard');
+              if (dash && !dash.classList.contains('hidden')) {
+                dash.scrollIntoView({ behavior: 'smooth' });
+              }
+            }, 400);
+          }
+        });
       }
+      // Close user dropdown on outside click
+      document.addEventListener('click', (e) => {
+        const menu = document.getElementById('user-dropdown');
+        const btn = e.target.closest('[onclick="toggleUserMenu()"]');
+        if (!btn && menu && !menu.classList.contains('hidden')) {
+          menu.classList.add('hidden');
+        }
+      });
     });
 
+    /* ——— Platform stats ——— */
     async function loadPlatformStats() {
       try {
         const res = await fetch('/api/platform/stats');
@@ -582,62 +750,97 @@
           const el = document.getElementById('stat-win-rate');
           if (el) el.innerText = `${data.rolling_24h_win_rate}%`;
         }
-      } catch (err) {
-        console.error(err);
+      } catch (err) { /* silent */ }
+    }
+
+    /* ——— Toast ——— */
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      const msgEl = document.getElementById('toast-msg');
+      icon.className = type === 'success'
+        ? 'fa-solid fa-check text-emerald-400'
+        : 'fa-solid fa-triangle-exclamation text-rose-400';
+      msgEl.innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 2800);
+    }
+
+    /* ——— User dropdown ——— */
+    function toggleUserMenu() {
+      document.getElementById('user-dropdown').classList.toggle('hidden');
+    }
+
+    /* ——— Password visibility toggle ——— */
+    function togglePasswordVisibility() {
+      const input = document.getElementById('auth-password');
+      const icon = document.getElementById('pw-eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash text-sm';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye text-sm';
       }
     }
 
+    /* ——— Auth Modal ——— */
     function clearAuthInputs() {
-      const form = document.getElementById('auth-form');
-      if (form) form.reset();
-      const n = document.getElementById('auth-name');
-      if (n) n.value = '';
-      const em = document.getElementById('auth-email');
-      if (em) em.value = '';
+      ['auth-name','auth-email','auth-password'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
       const pw = document.getElementById('auth-password');
-      if (pw) pw.value = '';
-      const errBox = document.getElementById('auth-error');
-      if (errBox) errBox.classList.add('hidden');
+      if (pw) pw.type = 'password';
+      document.getElementById('pw-eye-icon').className = 'fa-solid fa-eye text-sm';
+      document.getElementById('auth-error').classList.add('hidden');
     }
 
     function openAuthModal(mode) {
       authMode = mode;
       document.getElementById('auth-modal').classList.remove('hidden');
+      document.body.classList.add('modal-open');
       clearAuthInputs();
-      setTimeout(clearAuthInputs, 20);
-      setTimeout(clearAuthInputs, 100);
+      setTimeout(clearAuthInputs, 30);
       updateAuthModalUI();
     }
 
     function closeAuthModal() {
       document.getElementById('auth-modal').classList.add('hidden');
+      document.body.classList.remove('modal-open');
       clearAuthInputs();
     }
 
     function toggleAuthMode() {
       authMode = authMode === 'register' ? 'login' : 'register';
       clearAuthInputs();
-      setTimeout(clearAuthInputs, 20);
+      setTimeout(clearAuthInputs, 30);
       updateAuthModalUI();
     }
 
     function updateAuthModalUI() {
       const isReg = authMode === 'register';
       document.getElementById('auth-title').innerText = isReg ? 'Create Your Account' : 'Welcome Back';
-      document.getElementById('auth-subtitle').innerText = isReg ? 'Start your 7-day free trial with full 10-core access.' : 'Access your live algorithmic dashboard.';
+      document.getElementById('auth-subtitle').innerText = isReg
+        ? 'Start your 7-day free trial with full 10-core access.'
+        : 'Your session is secure. Sign in to reach your dashboard.';
       document.getElementById('auth-name-container').style.display = isReg ? 'block' : 'none';
       document.getElementById('auth-submit-btn').innerText = isReg ? 'Start 7-Day Free Trial ($0)' : 'Sign In to Dashboard';
       document.getElementById('auth-toggle-msg').innerText = isReg ? 'Already have an account?' : "Don't have an account yet?";
-      document.getElementById('auth-toggle-btn').innerText = isReg ? 'Sign In' : 'Start 7-Day Trial';
+      document.getElementById('auth-toggle-btn').innerText = isReg ? 'Sign In' : 'Start Free Trial';
       document.getElementById('auth-error').classList.add('hidden');
     }
 
     async function handleAuthSubmit(e) {
       e.preventDefault();
-      const email = document.getElementById('auth-email').value;
+      const email = document.getElementById('auth-email').value.trim();
       const password = document.getElementById('auth-password').value;
-      const full_name = document.getElementById('auth-name').value;
+      const full_name = document.getElementById('auth-name').value.trim();
       const errBox = document.getElementById('auth-error');
+      const btn = document.getElementById('auth-submit-btn');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Please wait...';
 
       const url = authMode === 'register' ? '/api/auth/register' : '/api/auth/login';
       const body = authMode === 'register' ? { email, password, full_name } : { email, password };
@@ -650,22 +853,27 @@
         });
         const data = await res.json();
         if (!res.ok) {
-          errBox.innerText = data.detail || 'Authentication failed.';
+          errBox.innerText = data.detail || 'Authentication failed. Check your credentials.';
           errBox.classList.remove('hidden');
           return;
         }
-
         authToken = data.token;
         localStorage.setItem('ultra_auth_token', authToken);
         closeAuthModal();
-        checkAuthProfile();
+        await checkAuthProfile();
         scrollToDashboard();
       } catch (err) {
-        errBox.innerText = 'Network error. Please try again.';
+        errBox.innerText = 'Network error. Please check your connection and try again.';
         errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        updateAuthModalUI(); // restore button text
+        const isReg = authMode === 'register';
+        document.getElementById('auth-submit-btn').innerText = isReg ? 'Start 7-Day Free Trial ($0)' : 'Sign In to Dashboard';
       }
     }
 
+    /* ——— Auth Profile (persistent session restore) ——— */
     async function checkAuthProfile() {
       if (!authToken) return;
       try {
@@ -673,35 +881,47 @@
           headers: { 'Authorization': `Bearer ${authToken}` }
         });
         if (!res.ok) {
-          logout();
+          // Token expired or invalid — clear silently
+          authToken = null;
+          localStorage.removeItem('ultra_auth_token');
+          updateNavGuest();
           return;
         }
         const data = await res.json();
         currentUser = data;
 
         // Update Nav
-        document.getElementById('nav-guest').classList.add('hidden');
-        document.getElementById('nav-user').classList.remove('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
+        updateNavUser(data.user.email);
 
-        // Populate Dashboard
-        document.getElementById('dash-user-email').innerText = data.user.email;
+        // Show Dashboard
+        document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('dash-user-email').innerText = data.user.email.split('@')[0];
+        document.getElementById('dropdown-email').innerText = data.user.email;
+
         const sub = data.subscription;
-        document.getElementById('dash-tier-badge').innerText = sub.tier.replace('_', ' ').toUpperCase();
+        const tierText = sub.tier === 'trial' ? '7-DAY FREE TRIAL' :
+                         sub.tier === 'paid_7d' ? '7-DAY ACCESS' : '30-DAY PRO';
+        document.getElementById('dash-tier-badge').innerText = tierText;
         document.getElementById('dash-status-badge').innerText = sub.status.toUpperCase();
-        
+
         if (sub.status !== 'active') {
           document.getElementById('dash-status-badge').className = "text-xs font-mono uppercase px-2.5 py-1 rounded bg-rose-950 text-rose-400 border border-rose-800 font-bold";
+        } else {
+          document.getElementById('dash-status-badge').className = "text-xs font-mono uppercase px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold";
         }
 
         startCountdownTimer(sub.seconds_remaining);
 
-        // Populate exchange state
+        // Exchange state
         if (data.exchange && data.exchange.status === 'connected') {
-          document.getElementById('exchange-badge').innerText = `${data.exchange.exchange.toUpperCase()} (Connected)`;
+          document.getElementById('exchange-badge').innerText = `${data.exchange.exchange.toUpperCase()} Connected`;
           document.getElementById('exchange-badge').className = "text-xs font-mono font-semibold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800";
           document.getElementById('conn-active-controls').classList.remove('hidden');
           document.getElementById('conn-balance').innerText = `$${data.exchange.balance_usdt.toFixed(2)} USDT`;
+        } else {
+          document.getElementById('exchange-badge').innerText = 'Not Connected';
+          document.getElementById('exchange-badge').className = "text-xs font-mono font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-400";
+          document.getElementById('conn-active-controls').classList.add('hidden');
         }
 
         loadUserTrades();
@@ -710,16 +930,43 @@
       }
     }
 
+    function updateNavUser(email) {
+      document.getElementById('nav-guest').classList.add('hidden');
+      document.getElementById('nav-user').classList.remove('hidden');
+      document.getElementById('dropdown-email').innerText = email;
+      // Mobile nav
+      document.getElementById('mob-nav-auth').classList.add('hidden');
+      document.getElementById('mob-nav-auth').style.display = 'none';
+      document.getElementById('mob-nav-dashboard').classList.remove('hidden');
+      document.getElementById('mob-nav-dashboard').style.display = 'flex';
+      document.getElementById('mob-nav-logout').classList.remove('hidden');
+      document.getElementById('mob-nav-logout').style.display = 'flex';
+      document.getElementById('mob-nav-security').style.display = 'none';
+    }
+
+    function updateNavGuest() {
+      document.getElementById('nav-guest').classList.remove('hidden');
+      document.getElementById('nav-user').classList.add('hidden');
+      document.getElementById('mob-nav-auth').classList.remove('hidden');
+      document.getElementById('mob-nav-auth').style.display = '';
+      document.getElementById('mob-nav-dashboard').classList.add('hidden');
+      document.getElementById('mob-nav-dashboard').style.display = 'none';
+      document.getElementById('mob-nav-logout').classList.add('hidden');
+      document.getElementById('mob-nav-logout').style.display = 'none';
+      document.getElementById('mob-nav-security').style.display = '';
+    }
+
+    /* ——— Countdown Timer (with seconds) ——— */
     function startCountdownTimer(secondsLeft) {
       if (countdownInterval) clearInterval(countdownInterval);
-      let remaining = secondsLeft;
+      let remaining = Math.max(0, secondsLeft);
 
       function update() {
         if (remaining <= 0) {
-          document.getElementById('timer-days').innerText = "00";
-          document.getElementById('timer-hours').innerText = "00";
-          document.getElementById('timer-minutes').innerText = "00";
-          document.getElementById('dash-status-badge').innerText = "EXPIRED";
+          ['timer-days','timer-hours','timer-minutes','timer-seconds'].forEach(id => {
+            document.getElementById(id).innerText = '00';
+          });
+          document.getElementById('dash-status-badge').innerText = 'EXPIRED';
           document.getElementById('dash-status-badge').className = "text-xs font-mono uppercase px-2.5 py-1 rounded bg-rose-950 text-rose-400 border border-rose-800 font-bold";
           clearInterval(countdownInterval);
           return;
@@ -727,16 +974,18 @@
         const d = Math.floor(remaining / 86400);
         const h = Math.floor((remaining % 86400) / 3600);
         const m = Math.floor((remaining % 3600) / 60);
-
+        const s = remaining % 60;
         document.getElementById('timer-days').innerText = String(d).padStart(2, '0');
         document.getElementById('timer-hours').innerText = String(h).padStart(2, '0');
         document.getElementById('timer-minutes').innerText = String(m).padStart(2, '0');
+        document.getElementById('timer-seconds').innerText = String(s).padStart(2, '0');
         remaining--;
       }
       update();
       countdownInterval = setInterval(update, 1000);
     }
 
+    /* ——— Exchange connect ——— */
     async function handleConnectExchange(e) {
       e.preventDefault();
       const exchange = document.getElementById('conn-exchange').value;
@@ -762,11 +1011,12 @@
 
         if (data.success) {
           feedback.className = "mt-4 p-4 rounded-xl text-xs font-mono bg-emerald-950/80 border border-emerald-700 text-emerald-300 block";
-          feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> ${data.message} <br><strong>Balance Detected:</strong> $${data.balance_usdt} USDT`;
+          feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i>${data.message}<br><strong>Balance:</strong> $${data.balance_usdt} USDT`;
+          showToast('Exchange connected successfully!');
           checkAuthProfile();
         } else {
           feedback.className = "mt-4 p-4 rounded-xl text-xs font-mono bg-rose-950/80 border border-rose-700 text-rose-300 block";
-          feedback.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i> ${data.error || 'Connection failed'}`;
+          feedback.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i>${data.error || 'Connection failed'}`;
         }
       } catch (err) {
         feedback.className = "mt-4 p-4 rounded-xl text-xs font-mono bg-rose-950/80 border border-rose-700 text-rose-300 block";
@@ -778,22 +1028,46 @@
       }
     }
 
-    async function handleDisconnectExchange() {
-      if (!confirm("Are you sure you want to disconnect? All automated trades will be stopped immediately.")) return;
-      try {
-        const res = await fetch('/api/exchange/disconnect', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${authToken}` }
-        });
-        if (res.ok) {
-          alert("Exchange disconnected successfully.");
-          checkAuthProfile();
+    /* ——— Disconnect (inline confirm) ——— */
+    function promptDisconnect() {
+      showConfirm(
+        'Disconnect Exchange?',
+        'All automated trades will be stopped immediately. You can reconnect anytime.',
+        async () => {
+          try {
+            const res = await fetch('/api/exchange/disconnect', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            if (res.ok) {
+              showToast('Exchange disconnected.');
+              checkAuthProfile();
+            }
+          } catch (err) { console.error(err); }
         }
-      } catch (err) {
-        console.error(err);
-      }
+      );
     }
 
+    /* ——— Inline Confirm Dialog ——— */
+    function showConfirm(title, message, onOk) {
+      document.getElementById('confirm-title').innerText = title;
+      document.getElementById('confirm-message').innerText = message;
+      confirmCallback = onOk;
+      document.getElementById('confirm-modal').classList.remove('hidden');
+      document.body.classList.add('modal-open');
+    }
+    function confirmOk() {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      document.body.classList.remove('modal-open');
+      if (confirmCallback) { confirmCallback(); confirmCallback = null; }
+    }
+    function confirmCancel() {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      document.body.classList.remove('modal-open');
+      confirmCallback = null;
+    }
+
+    /* ——— Load user trades ——— */
     async function loadUserTrades() {
       try {
         const res = await fetch('/api/user/trades', {
@@ -801,7 +1075,7 @@
         });
         if (!res.ok) return;
         const data = await res.json();
-        
+
         const pnlEl = document.getElementById('dash-total-pnl');
         const tbody = document.getElementById('trade-log-rows');
         tbody.innerHTML = '';
@@ -813,8 +1087,8 @@
             <tr>
               <td colspan="5" class="py-12 text-center text-slate-500 font-sans">
                 <i class="fa-solid fa-chart-line text-2xl mb-2 block text-slate-600"></i>
-                No live trades executed yet.<br>
-                <span class="text-[11px] text-slate-500">Connect your exchange API keys above to begin receiving automated trades from all 10 engines.</span>
+                No live trades yet.<br>
+                <span class="text-[11px] text-slate-500">Connect your API key above to start receiving automated trades from all 10 engines.</span>
               </td>
             </tr>
           `;
@@ -822,16 +1096,8 @@
         }
 
         const pnl = data.total_pnl_usd || 0.0;
-        if (pnl > 0) {
-          pnlEl.innerText = `+$${pnl.toFixed(2)} USDT`;
-          pnlEl.className = 'text-lg font-mono font-bold text-emerald-400';
-        } else if (pnl < 0) {
-          pnlEl.innerText = `-$${Math.abs(pnl).toFixed(2)} USDT`;
-          pnlEl.className = 'text-lg font-mono font-bold text-rose-400';
-        } else {
-          pnlEl.innerText = '$0.00 USDT';
-          pnlEl.className = 'text-lg font-mono font-bold text-slate-400';
-        }
+        pnlEl.innerText = pnl > 0 ? `+$${pnl.toFixed(2)} USDT` : pnl < 0 ? `-$${Math.abs(pnl).toFixed(2)} USDT` : '$0.00 USDT';
+        pnlEl.className = `text-lg font-mono font-bold ${pnl > 0 ? 'text-emerald-400' : pnl < 0 ? 'text-rose-400' : 'text-slate-400'}`;
 
         data.trades.forEach(t => {
           const row = document.createElement('tr');
@@ -846,11 +1112,10 @@
           `;
           tbody.appendChild(row);
         });
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     }
 
+    /* ——— Payment Modal ——— */
     let selectedPaymentTier = 'paid_7d';
 
     function openPaymentModal(tier) {
@@ -863,22 +1128,18 @@
       document.getElementById('pay-plan-name').innerText = is7d ? '7-Day Weekly Pass' : '30-Day Monthly Pro';
       document.getElementById('pay-plan-price').innerText = is7d ? '$19.00 USDT' : '$69.00 USDT';
       document.getElementById('pay-tx-hash').value = '';
-      const feedback = document.getElementById('pay-feedback');
-      if (feedback) {
-        feedback.className = 'hidden';
-        feedback.innerHTML = '';
-      }
+      const fb = document.getElementById('pay-feedback');
+      if (fb) { fb.className = 'hidden'; fb.innerHTML = ''; }
       document.getElementById('payment-modal').classList.remove('hidden');
+      document.body.classList.add('modal-open');
     }
 
     function closePaymentModal() {
       document.getElementById('payment-modal').classList.add('hidden');
+      document.body.classList.remove('modal-open');
       document.getElementById('pay-tx-hash').value = '';
-      const feedback = document.getElementById('pay-feedback');
-      if (feedback) {
-        feedback.className = 'hidden';
-        feedback.innerHTML = '';
-      }
+      const fb = document.getElementById('pay-feedback');
+      if (fb) { fb.className = 'hidden'; fb.innerHTML = ''; }
     }
 
     function copyPaymentAddress() {
@@ -888,6 +1149,7 @@
         const orig = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-check mr-1.5 text-emerald-400"></i> Copied!';
         btn.classList.add('border-emerald-500', 'text-emerald-400');
+        showToast('Wallet address copied!');
         setTimeout(() => {
           btn.innerHTML = orig;
           btn.classList.remove('border-emerald-500', 'text-emerald-400');
@@ -914,10 +1176,7 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${authToken}`
           },
-          body: JSON.stringify({
-            tx_hash: txHash,
-            tier: selectedPaymentTier
-          })
+          body: JSON.stringify({ tx_hash: txHash, tier: selectedPaymentTier })
         });
 
         const data = await res.json();
@@ -932,10 +1191,10 @@
         feedback.innerHTML = `
           <div class="font-bold text-emerald-400 mb-1"><i class="fa-solid fa-circle-check mr-1.5"></i> Payment Confirmed on BSC!</div>
           <div>${data.message}</div>
-          <div class="mt-1 text-[11px] text-slate-300">New Expiration: ${data.subscription.expires_at} (${data.subscription.days_remaining} days active)</div>
+          <div class="mt-1 text-[11px] text-slate-300">New Expiry: ${data.subscription.expires_at} · ${data.subscription.days_remaining} days remaining</div>
         `;
+        showToast('Subscription activated!');
 
-        // Refresh live profile and countdown
         setTimeout(() => {
           checkAuthProfile();
           closePaymentModal();
@@ -950,13 +1209,9 @@
       }
     }
 
-    function handleSubscribePlan(tier) {
-      openPaymentModal(tier);
-    }
-
-    function handleUpgrade(tier) {
-      openPaymentModal(tier);
-    }
+    /* ——— Helpers ——— */
+    function handleSubscribePlan(tier) { openPaymentModal(tier); }
+    function handleUpgrade(tier) { openPaymentModal(tier); }
 
     function scrollToDashboard() {
       document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
@@ -966,11 +1221,23 @@
       localStorage.removeItem('ultra_auth_token');
       authToken = null;
       currentUser = null;
-      document.getElementById('nav-guest').classList.remove('hidden');
-      document.getElementById('nav-user').classList.add('hidden');
+      if (countdownInterval) clearInterval(countdownInterval);
       document.getElementById('dashboard').classList.add('hidden');
+      updateNavGuest();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast('Signed out successfully.');
     }
+
+    /* ——— Close modals on backdrop click ——— */
+    document.getElementById('auth-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeAuthModal();
+    });
+    document.getElementById('payment-modal').addEventListener('click', function(e) {
+      if (e.target === this) closePaymentModal();
+    });
+    document.getElementById('confirm-modal').addEventListener('click', function(e) {
+      if (e.target === this) confirmCancel();
+    });
   </script>
 </body>
 </html>
