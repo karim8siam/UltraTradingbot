@@ -107,6 +107,17 @@ UltraTradingbot/
 * **Execution & Protection:** Immediate market entry with native Binance Futures bracket orders (`TAKE_PROFIT_MARKET` & `STOP_MARKET`, `reduceOnly=True`) and OCO residual clean-up
 * **Pairs:** **Top 30 Liquid Binance USDT-M Futures Pairs** (`BTCUSDT`, `ETHUSDT`, `SOLUSDT`, `BNBUSDT`, `XRPUSDT`, `DOGEUSDT`, `ADAUSDT`, `AVAXUSDT`, `LINKUSDT`, `SUIUSDT`, `NEARUSDT`, `APTUSDT`, `LTCUSDT`, `BCHUSDT`, `DOTUSDT`, `POLUSDT`, `ETCUSDT`, `XLMUSDT`, `FILUSDT`, `INJUSDT`, `RENDERUSDT`, `1000PEPEUSDT`, `1000SHIBUSDT`, `1000BONKUSDT`, `1000FLOKIUSDT`, `TIAUSDT`, `SEIUSDT`, `FETUSDT`, `ARBUSDT`, `OPUSDT`).
 
+### 9. Engine 9: Multi-Timeframe Systematic Swing Trading Engine
+* **Timeframes:** 1D Macro Regime Bias (200 EMA + Structure) | 4H Intermediate Momentum & Swing Points | 1H Pullback & Confirmation Entry
+* **Strategy:** Zero-Lookahead Multi-Timeframe Swing Trend Engine
+  * Daily Trend Directional Baseline filter
+  * 4H Swing High / Swing Low Structural Break detection
+  * 1H Momentum Confirmation with ATR-based dynamic stop loss
+  * Minimum Setup Scorer (>= 14 points required)
+* **Risk & Leverage:** Strictly **1.0% Risk per trade**, **3x Isolated Leverage** (conservative swing sizing), **>= 1:2.5 Risk/Reward Ratio**
+* **Pairs:** Top 25 High-Liquidity Binance USDT-M Futures Pairs (`BTCUSDT`, `ETHUSDT`, `BNBUSDT`, `SOLUSDT`, `XRPUSDT`, `ADAUSDT`, `DOGEUSDT`, `AVAXUSDT`, `LINKUSDT`, `DOTUSDT`, `NEARUSDT`, `SUIUSDT`, `APTUSDT`, `OPUSDT`, `ARBUSDT`, `ATOMUSDT`, `LTCUSDT`, `BCHUSDT`, `ETCUSDT`, `FILUSDT`, `ICPUSDT`, `INJUSDT`, `TIAUSDT`, `RENDERUSDT`, `UNIUSDT`).
+
+
 
 ---
 

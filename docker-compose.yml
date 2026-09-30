@@ -96,5 +96,18 @@ services:
       - ./engines/engine_8_gfs_multitimeframe/data:/app/data
       - ./engines/engine_8_gfs_multitimeframe/gfs_live.log:/app/gfs_live.log
 
+  engine_9_futures_swing:
+    build:
+      context: ./engines/engine_9_futures_swing
+      dockerfile: Dockerfile
+    container_name: engine_9_futures_swing
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./engines/engine_9_futures_swing/data:/app/data
+      - ./engines/engine_9_futures_swing/bot.log:/app/bot.log
+
+
 
 
