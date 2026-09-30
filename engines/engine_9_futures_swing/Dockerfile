@@ -11,4 +11,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python3", "main.py", "--mode", "dry-run"]
+CMD ["python3", "main.py", "scan"]
