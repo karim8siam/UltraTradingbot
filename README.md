@@ -13,6 +13,7 @@ UltraTradingbot/
 ├── engines/
 │   ├── engine_1_multiregime_ml/       # 5M/15M/1H Multi-Regime + ML Ensemble + Gemini AI
 │   ├── engine_2_momentum_3candle/     # 15M 3-Candle Momentum & Volume Breakout
+│   ├── engine_3_confluence_scalper/   # 10-Point Confluence Scalper (1.55x ATR, 1% Risk, 5x Lev)
 │   ├── ...                            # Future Engines (SMC, Fibonacci, FVG, GFS, Swing)
 ├── screener/                          # Phase 2: 7-Day 60% Win-Rate Scanner (30 coins)
 ├── docker-compose.yml                 # Master 24/7 Multi-Service Orchestrator
@@ -38,6 +39,15 @@ UltraTradingbot/
 * **Risk & Leverage:** 0.1% margin fraction per trade, 5x Isolated Leverage
 * **Max Concurrent Trades:** 4
 * **Pairs:** Top 25 High-Liquidity USDT-M Futures Pairs
+
+### 3. Engine 3: 10-Point Confluence Scalper
+* **Timeframes:** 30m (Recommended) | 15m | 5m
+* **Strategy:** 10-Point Confluence Checklist (RVOL, ADX Trend, 1H EMA200 Macro, 24h Session VWAP, EMA 9/21/50 Ribbon, MACD Momentum, RSI Corridor, ATR Expansion, Spread, Engulfing/Pinbar Trigger)
+* **Execution Rule:** Minimum Confluence Score >= 8.0 / 10.0 Points
+* **Formulas:** 1.55x ATR Stop-Loss & Take-Profit (0.55x ATR discarded due to fee drag)
+* **Risk & Leverage:** Strictly <= 1.0% Risk per trade of portfolio equity, 5x Isolated Leverage
+* **Max Hold Timeout:** 8 Candles (Auto market close)
+* **Pairs:** Top 30 Clean High-Liquidity Crypto USDT Pairs (Stablecoins & Pegged Assets filtered out)
 
 ---
 

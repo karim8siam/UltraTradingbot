@@ -25,3 +25,14 @@ services:
       - .env
     volumes:
       - ./engines/engine_2_momentum_3candle/active_trades.json:/app/active_trades.json
+
+  engine_3_confluence_scalper:
+    build:
+      context: ./engines/engine_3_confluence_scalper
+      dockerfile: Dockerfile
+    container_name: engine_3_confluence_scalper
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./engines/engine_3_confluence_scalper/active_trades.json:/app/active_trades.json
