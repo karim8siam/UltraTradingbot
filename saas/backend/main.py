@@ -268,17 +268,14 @@ def get_payment_info():
             "paid_7d": {
                 "name": "7-Day Full Access Pass",
                 "price_usd": 19.00,
-                "min_accepted_usd": 17.50,
                 "days": 7
             },
             "paid_30d": {
                 "name": "30-Day Institutional Pro",
                 "price_usd": 69.00,
-                "min_accepted_usd": 65.00,
                 "days": 30
             }
-        },
-        "fee_tolerance_note": "Network & exchange withdrawal fees (~$1-$2) are automatically tolerated."
+        }
     }
 
 

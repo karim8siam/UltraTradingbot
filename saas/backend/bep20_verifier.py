@@ -164,7 +164,7 @@ class BEP20Verifier:
         else:
             return {
                 "success": False,
-                "error": f"Received amount (${amount:.2f} {token_symbol}) is below the minimum required for the 7-day plan ($19.00). Minimum required with fee tolerance is ${TIER_7D_MIN_TOLERANCE:.2f}."
+                "error": f"Received amount (${amount:.2f} {token_symbol}) does not meet the plan requirement ($19.00 for 7-day or $69.00 for 30-day)."
             }
 
         block_number = int(receipt.get("blockNumber", "0x0"), 16)
