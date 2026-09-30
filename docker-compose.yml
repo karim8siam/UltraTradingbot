@@ -36,3 +36,15 @@ services:
       - .env
     volumes:
       - ./engines/engine_3_confluence_scalper/active_trades.json:/app/active_trades.json
+
+  engine_4_reversal_5candle:
+    build:
+      context: ./engines/engine_4_reversal_5candle
+      dockerfile: Dockerfile
+    container_name: engine_4_reversal_5candle
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./engines/engine_4_reversal_5candle/active_trades.json:/app/active_trades.json
+

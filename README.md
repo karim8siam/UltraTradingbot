@@ -44,10 +44,19 @@ UltraTradingbot/
 * **Timeframes:** 30m (Recommended) | 15m | 5m
 * **Strategy:** 10-Point Confluence Checklist (RVOL, ADX Trend, 1H EMA200 Macro, 24h Session VWAP, EMA 9/21/50 Ribbon, MACD Momentum, RSI Corridor, ATR Expansion, Spread, Engulfing/Pinbar Trigger)
 * **Execution Rule:** Minimum Confluence Score >= 8.0 / 10.0 Points
-* **Formulas:** 1.55x ATR Stop-Loss & Take-Profit (0.55x ATR discarded due to fee drag)
+* **Formulas:** 1.55x ATR Stop-Loss & 3.10x ATR Take-Profit (Strict 1:2 Risk to Reward)
 * **Risk & Leverage:** Strictly <= 1.0% Risk per trade of portfolio equity, 5x Isolated Leverage
 * **Max Hold Timeout:** 8 Candles (Auto market close)
 * **Pairs:** Top 30 Clean High-Liquidity Crypto USDT Pairs (Stablecoins & Pegged Assets filtered out)
+
+### 4. Engine 4: 15M 5-Candle Momentum Exhaustion Reversal
+* **Timeframe:** 15m
+* **Strategy:** 5 consecutive healthy directional candles (Doji skipping filter) + RSI(14) Overbought (>= 65) / Oversold (<= 35) reversal capture
+* **Hold Duration:** Fixed 45-minute time exit (3 candles)
+* **Risk & Leverage:** 0.1% margin fraction per trade, 5x Isolated Leverage
+* **Max Concurrent Trades:** 3
+* **Pairs:** Top 25 Verified High-Win-Rate Futures Pairs
+
 
 ---
 
