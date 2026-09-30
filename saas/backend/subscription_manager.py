@@ -87,6 +87,85 @@ class SubscriptionManager:
         }
 
     @staticmethod
+    def process_bep20_payment(
+        user_id: int,
+        tx_hash: str,
+        amount: float,
+        tier: str,
+        token_symbol: str,
+        sender_address: str,
+        receiver_address: str,
+        block_number: int
+    ) -> Dict[str, Any]:
+        """
+        Records a verified BEP20 blockchain payment and extends subscription.
+        Guarantees that tx_hash can never be reused.
+        """
+        clean_hash = tx_hash.strip().lower()
+        now = datetime.now(timezone.utc)
+        now_str = now.strftime("%Y-%m-%d %H:%M:%S UTC")
+
+        with get_db() as conn:
+            # 1. Check if transaction hash has already been redeemed
+            existing = conn.execute(
+                "SELECT id, user_id, created_at FROM payment_transactions WHERE LOWER(tx_hash) = ?",
+                (clean_hash,)
+            ).fetchone()
+            if existing:
+                raise ValueError("This transaction hash has already been redeemed and cannot be used again.")
+
+            # 2. Insert into payment_transactions
+            conn.execute("""
+            INSERT INTO payment_transactions (
+                user_id, tx_hash, amount, token_symbol, tier, sender_address, receiver_address, network, block_number, status, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'BEP20', ?, 'verified', ?)
+            """, (user_id, clean_hash, amount, token_symbol, tier, sender_address, receiver_address, block_number, now_str))
+
+            # 3. Calculate new subscription expiration (stacking if currently active)
+            days_to_add = 30 if tier == "paid_30d" else 7
+
+            row = conn.execute("""
+            SELECT expires_at, status FROM subscriptions
+            WHERE user_id = ? AND status = 'active'
+            ORDER BY id DESC LIMIT 1
+            """, (user_id,)).fetchone()
+
+            base_time = now
+            if row:
+                try:
+                    exp_dt = datetime.strptime(row["expires_at"], "%Y-%m-%d %H:%M:%S UTC").replace(tzinfo=timezone.utc)
+                    if exp_dt > now:
+                        base_time = exp_dt
+                except Exception:
+                    base_time = now
+
+            new_expires = base_time + timedelta(days=days_to_add)
+            exp_str = new_expires.strftime("%Y-%m-%d %H:%M:%S UTC")
+
+            conn.execute("""
+            INSERT INTO subscriptions (user_id, tier, status, starts_at, expires_at, amount_paid, created_at)
+            VALUES (?, ?, 'active', ?, ?, ?, ?)
+            """, (user_id, tier, now_str, exp_str, amount, now_str))
+
+            # Re-activate exchange connection if was disconnected
+            conn.execute("""
+            UPDATE exchange_keys SET status = 'connected'
+            WHERE user_id = ? AND is_valid = 1
+            """, (user_id,))
+            conn.commit()
+
+        return {
+            "tier": tier,
+            "status": "active",
+            "starts_at": now_str,
+            "expires_at": exp_str,
+            "days_remaining": round((new_expires - now).total_seconds() / 86400.0, 1),
+            "amount_paid": amount,
+            "token": token_symbol,
+            "tx_hash": clean_hash
+        }
+
+    @staticmethod
     def get_subscription_status(user_id: int) -> Dict[str, Any]:
         """
         Calculates live subscription status and countdown.

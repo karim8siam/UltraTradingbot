@@ -22,6 +22,7 @@ from security import (
 from exchange_verifier import ExchangeVerifier
 from subscription_manager import SubscriptionManager
 from multi_tenant_trader import MultiTenantTradeDispatcher
+from bep20_verifier import BEP20Verifier, TARGET_WALLET
 
 app = FastAPI(title="UltraQuant Institutional SaaS Platform", version="2.0.0")
 
@@ -54,6 +55,10 @@ class ConnectExchangeRequest(BaseModel):
 
 class UpgradeRequest(BaseModel):
     tier: str  # 'paid_7d' ($19) or 'paid_30d' ($69)
+
+class VerifyTxRequest(BaseModel):
+    tx_hash: str
+    tier: Optional[str] = "paid_7d"
 
 
 # --- Dependency for Authenticated Endpoints ---
@@ -250,6 +255,79 @@ def disconnect_exchange(user: Dict[str, Any] = Depends(get_current_user)):
         conn.execute("UPDATE exchange_keys SET status = 'disconnected' WHERE user_id = ?", (user_id,))
         conn.commit()
     return {"success": True, "message": "Exchange disconnected. Bot trading suspended."}
+
+
+# --- BEP20 Crypto Payment Gateway ---
+@app.get("/api/payment/info")
+def get_payment_info():
+    return {
+        "target_wallet": TARGET_WALLET,
+        "network": "BNB Smart Chain (BEP20)",
+        "accepted_tokens": ["USDT (BEP20)", "USDC (BEP20)", "BNB"],
+        "tiers": {
+            "paid_7d": {
+                "name": "7-Day Full Access Pass",
+                "price_usd": 19.00,
+                "min_accepted_usd": 17.50,
+                "days": 7
+            },
+            "paid_30d": {
+                "name": "30-Day Institutional Pro",
+                "price_usd": 69.00,
+                "min_accepted_usd": 65.00,
+                "days": 30
+            }
+        },
+        "fee_tolerance_note": "Network & exchange withdrawal fees (~$1-$2) are automatically tolerated."
+    }
+
+
+@app.post("/api/payment/verify-tx")
+def verify_payment_tx(req: VerifyTxRequest, user: Dict[str, Any] = Depends(get_current_user)):
+    user_id = user["user_id"]
+    clean_hash = req.tx_hash.strip().lower()
+
+    if not clean_hash:
+        raise HTTPException(status_code=400, detail="Transaction hash is required.")
+
+    # 1. Anti-Replay: Check database to ensure tx_hash has never been used
+    with get_db() as conn:
+        existing = conn.execute(
+            "SELECT id, user_id, created_at FROM payment_transactions WHERE LOWER(tx_hash) = ?",
+            (clean_hash,)
+        ).fetchone()
+        if existing:
+            raise HTTPException(
+                status_code=400,
+                detail="This transaction hash has already been redeemed / used. Each transaction can only be redeemed once."
+            )
+
+    # 2. Query BNB Smart Chain dataseeds to verify transaction on-chain
+    check_res = BEP20Verifier.verify_transaction(clean_hash, expected_tier=req.tier)
+    if not check_res["success"]:
+        raise HTTPException(status_code=400, detail=check_res["error"])
+
+    # 3. Credit subscription and record verified payment
+    try:
+        sub = SubscriptionManager.process_bep20_payment(
+            user_id=user_id,
+            tx_hash=clean_hash,
+            amount=check_res["amount"],
+            tier=check_res["approved_tier"],
+            token_symbol=check_res["token_symbol"],
+            sender_address=check_res["sender_address"],
+            receiver_address=check_res["receiver_address"],
+            block_number=check_res["block_number"]
+        )
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+
+    return {
+        "success": True,
+        "message": check_res["message"],
+        "details": check_res,
+        "subscription": sub
+    }
 
 
 # --- Subscription Management ---

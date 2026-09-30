@@ -484,6 +484,80 @@
     </div>
   </div>
 
+  <!-- ================= BEP20 PAYMENT MODAL ================= -->
+  <div id="payment-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden">
+    <div class="glass-card-active p-6 sm:p-8 rounded-3xl max-w-lg w-full mx-4 relative glow-cyan max-h-[90vh] overflow-y-auto">
+      <button onclick="closePaymentModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+      <div class="flex items-center space-x-2 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-wallet text-sm"></i>
+        <span>BNB Smart Chain (BEP20) Gateway</span>
+      </div>
+
+      <h3 id="pay-modal-title" class="text-2xl font-bold text-white mb-1">Upgrade Subscription</h3>
+      <p id="pay-modal-subtitle" class="text-xs text-slate-400 mb-6">Send payment to activate automated 24/7 algorithmic trading.</p>
+
+      <!-- Amount & Plan Badge Box -->
+      <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 mb-6 flex items-center justify-between">
+        <div>
+          <span class="text-xs text-slate-400 uppercase font-mono block">Selected Plan</span>
+          <span id="pay-plan-name" class="text-sm font-bold text-white">7-Day Weekly Pass</span>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-slate-400 uppercase font-mono block">Amount Due</span>
+          <span id="pay-plan-price" class="text-xl font-mono font-extrabold text-cyan-400">$19.00 USDT</span>
+        </div>
+      </div>
+
+      <!-- Deposit Instructions -->
+      <div class="space-y-4 mb-6">
+        <div>
+          <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5 flex items-center justify-between">
+            <span>Send Payment to this BEP20 Address</span>
+            <span class="text-[11px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> BSC (BEP20) Only</span>
+          </label>
+          <div class="flex items-center space-x-2 bg-slate-950 border border-cyan-800/60 rounded-xl p-3">
+            <span id="pay-target-address" class="text-xs sm:text-sm font-mono text-cyan-300 break-all select-all flex-1">0x66A06fA03BE98383fe4F73a5f1783332CAC0F5A0</span>
+            <button onclick="copyPaymentAddress()" id="btn-copy-address" class="px-3 py-1.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 border border-cyan-700 text-cyan-400 font-mono text-xs font-bold transition flex items-center whitespace-nowrap">
+              <i class="fa-regular fa-copy mr-1.5"></i> Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- Accepted Tokens & Fee Tolerance Note -->
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs space-y-1.5">
+          <div class="flex items-center text-slate-300">
+            <i class="fa-solid fa-coins text-cyan-400 mr-2"></i>
+            <span>Accepted: <strong class="text-white">USDT</strong> or <strong class="text-white">USDC</strong> (BEP20)</span>
+          </div>
+          <div class="flex items-start text-emerald-400/90 text-[11px]">
+            <i class="fa-solid fa-shield-halved mr-2 mt-0.5 text-emerald-400"></i>
+            <span><strong>Network Fee Tolerance:</strong> Exchange withdrawal fee deductions (e.g. ~$18.00–$20.00 for $19 plan, ~$67.00–$71.00 for $69 plan) are automatically accepted.</span>
+          </div>
+        </div>
+
+        <!-- Transaction Hash Input Form -->
+        <form id="pay-verify-form" onsubmit="handleVerifyPaymentTx(event)" autocomplete="off" class="space-y-4">
+          <div>
+            <label class="block text-xs font-mono text-slate-400 uppercase mb-1">
+              Transaction Hash (TxID)
+            </label>
+            <input type="text" id="pay-tx-hash" required placeholder="" autocomplete="off" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs sm:text-sm font-mono text-white focus:outline-none focus:border-cyan-500">
+            <span class="text-[10px] text-slate-500 mt-1 block">Paste your 66-character transaction hash from MetaMask or exchange withdrawal history.</span>
+          </div>
+
+          <button type="submit" id="btn-verify-tx" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-md transition flex items-center justify-center">
+            <i class="fa-solid fa-magnifying-glass-chart mr-2"></i>
+            <span>Verify on Blockchain & Activate</span>
+          </button>
+        </form>
+
+        <div id="pay-feedback" class="hidden p-4 rounded-xl text-xs font-mono"></div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ================= SCRIPTS & API GLUE ================= -->
   <script>
     let authMode = 'register'; // 'register' or 'login'
@@ -777,35 +851,111 @@
       }
     }
 
-    async function handleSubscribePlan(tier) {
+    let selectedPaymentTier = 'paid_7d';
+
+    function openPaymentModal(tier) {
       if (!authToken) {
         openAuthModal('register');
         return;
       }
-      handleUpgrade(tier);
+      selectedPaymentTier = tier || 'paid_7d';
+      const is7d = selectedPaymentTier === 'paid_7d';
+      document.getElementById('pay-plan-name').innerText = is7d ? '7-Day Weekly Pass' : '30-Day Monthly Pro';
+      document.getElementById('pay-plan-price').innerText = is7d ? '$19.00 USDT' : '$69.00 USDT';
+      document.getElementById('pay-tx-hash').value = '';
+      const feedback = document.getElementById('pay-feedback');
+      if (feedback) {
+        feedback.className = 'hidden';
+        feedback.innerHTML = '';
+      }
+      document.getElementById('payment-modal').classList.remove('hidden');
     }
 
-    async function handleUpgrade(tier) {
-      const price = tier === 'paid_7d' ? '$19 (7 Days)' : '$69 (30 Days)';
-      if (!confirm(`Confirm upgrade to ${price}? Your automated trading time will be added instantly.`)) return;
+    function closePaymentModal() {
+      document.getElementById('payment-modal').classList.add('hidden');
+      document.getElementById('pay-tx-hash').value = '';
+      const feedback = document.getElementById('pay-feedback');
+      if (feedback) {
+        feedback.className = 'hidden';
+        feedback.innerHTML = '';
+      }
+    }
+
+    function copyPaymentAddress() {
+      const addr = document.getElementById('pay-target-address').innerText.trim();
+      navigator.clipboard.writeText(addr).then(() => {
+        const btn = document.getElementById('btn-copy-address');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check mr-1.5 text-emerald-400"></i> Copied!';
+        btn.classList.add('border-emerald-500', 'text-emerald-400');
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.classList.remove('border-emerald-500', 'text-emerald-400');
+        }, 2000);
+      });
+    }
+
+    async function handleVerifyPaymentTx(e) {
+      e.preventDefault();
+      const txHash = document.getElementById('pay-tx-hash').value.trim();
+      const btn = document.getElementById('btn-verify-tx');
+      const feedback = document.getElementById('pay-feedback');
+
+      if (!txHash) return;
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Querying BNB Smart Chain...';
+      feedback.className = 'hidden';
 
       try {
-        const res = await fetch('/api/subscription/upgrade', {
+        const res = await fetch('/api/payment/verify-tx', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${authToken}`
           },
-          body: JSON.stringify({ tier })
+          body: JSON.stringify({
+            tx_hash: txHash,
+            tier: selectedPaymentTier
+          })
         });
+
         const data = await res.json();
-        if (res.ok) {
-          alert(data.message);
-          checkAuthProfile();
+
+        if (!res.ok) {
+          feedback.className = 'mt-3 p-3.5 rounded-xl bg-rose-950/70 border border-rose-800 text-rose-300 text-xs';
+          feedback.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5 text-rose-400"></i> ${data.detail || 'Verification failed.'}`;
+          return;
         }
+
+        feedback.className = 'mt-3 p-3.5 rounded-xl bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs';
+        feedback.innerHTML = `
+          <div class="font-bold text-emerald-400 mb-1"><i class="fa-solid fa-circle-check mr-1.5"></i> Payment Confirmed on BSC!</div>
+          <div>${data.message}</div>
+          <div class="mt-1 text-[11px] text-slate-300">New Expiration: ${data.subscription.expires_at} (${data.subscription.days_remaining} days active)</div>
+        `;
+
+        // Refresh live profile and countdown
+        setTimeout(() => {
+          checkAuthProfile();
+          closePaymentModal();
+        }, 3000);
+
       } catch (err) {
-        console.error(err);
+        feedback.className = 'mt-3 p-3.5 rounded-xl bg-rose-950/70 border border-rose-800 text-rose-300 text-xs';
+        feedback.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5 text-rose-400"></i> Network error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart mr-2"></i> Verify on Blockchain & Activate';
       }
+    }
+
+    function handleSubscribePlan(tier) {
+      openPaymentModal(tier);
+    }
+
+    function handleUpgrade(tier) {
+      openPaymentModal(tier);
     }
 
     function scrollToDashboard() {

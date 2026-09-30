@@ -74,6 +74,24 @@ def init_db():
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
         """)
+
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS payment_transactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            tx_hash TEXT UNIQUE NOT NULL,
+            amount REAL NOT NULL,
+            token_symbol TEXT NOT NULL,
+            tier TEXT NOT NULL,
+            sender_address TEXT NOT NULL,
+            receiver_address TEXT NOT NULL,
+            network TEXT DEFAULT 'BEP20',
+            block_number INTEGER DEFAULT 0,
+            status TEXT DEFAULT 'verified',
+            created_at TEXT NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+        """)
         conn.commit()
 
 
