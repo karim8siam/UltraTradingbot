@@ -12,6 +12,20 @@ services:
     volumes:
       - ./shared:/app/shared
 
+  saas_platform:
+    build:
+      context: ./saas
+      dockerfile: Dockerfile
+    container_name: saas_platform
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./saas/data:/app/data
+      - ./shared:/app/shared
+
   engine_1_multiregime_ml:
     build:
       context: ./engines/engine_1_multiregime_ml

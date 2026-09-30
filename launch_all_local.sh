@@ -27,6 +27,12 @@ cd "$ROOT_DIR/screener"
 nohup python3 -u daily_screener.py > "$LOG_DIR/screener.log" 2>&1 &
 echo $! > "$PID_DIR/daily_screener.pid"
 
+# SaaS Client Web Portal & API (Port 8080)
+echo "Starting [SaaS Web Portal on http://localhost:8080]..."
+cd "$ROOT_DIR/saas"
+nohup python3 -m uvicorn backend.main:app --host 0.0.0.0 --port 8080 > "$LOG_DIR/saas_platform.log" 2>&1 &
+echo $! > "$PID_DIR/saas_platform.pid"
+
 # 1. Engine 1: Multi-Regime ML
 echo "Starting [Engine 1: Multi-Regime ML]..."
 cd "$ROOT_DIR/engines/engine_1_multiregime_ml"
@@ -78,7 +84,7 @@ echo $! > "$PID_DIR/engine_8.pid"
 # 9. Engine 9: Futures Swing
 echo "Starting [Engine 9: Futures Swing]..."
 cd "$ROOT_DIR/engines/engine_9_futures_swing"
-nohup python3 -u main.py scan > "$LOG_DIR/engine_9.log" 2>&1 &
+nohup python3 -u main.py paper > "$LOG_DIR/engine_9.log" 2>&1 &
 echo $! > "$PID_DIR/engine_9.pid"
 
 # 10. Engine 10: Confluence 100-Pairs

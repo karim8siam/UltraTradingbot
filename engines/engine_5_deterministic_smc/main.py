@@ -95,6 +95,8 @@ def main():
     parser = argparse.ArgumentParser(description="Binance USDT-M Futures Deterministic SMC Trading Bot")
     parser.add_argument("--mode", choices=["dry-run", "paper", "testnet", "live", "backtest", "split-test"], default="dry-run")
     parser.add_argument("--symbol", default="BTCUSDT", help="Symbol for backtest / focus")
+    parser.add_argument("--once", action="store_true", help="Run a single cycle and exit")
+    parser.add_argument("--interval", type=int, default=15, help="Scan interval in seconds (default: 15)")
     args = parser.parse_args()
 
     config = Config()
@@ -159,47 +161,55 @@ def main():
             sym, limit_4h=50, limit_1h=100, limit_15m=150, limit_5m=200
         )
 
-    # Single iteration dry-run / paper check
-    symbol_states_summary = {}
-    today_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    print(f"[*] Starting SMC scan loop (interval: {args.interval}s)... Press Ctrl+C to terminate.")
+    try:
+        while True:
+            symbol_states_summary = {}
+            today_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-    for sym in config.SYMBOLS:
-        sm = state_machines[sym]
-        c4h = candle_mgr.get_closed_candles(sym, "4h")
-        c1h = candle_mgr.get_closed_candles(sym, "1h")
-        c15m = candle_mgr.get_closed_candles(sym, "15m")
-        c5m = candle_mgr.get_closed_candles(sym, "5m")
+            for sym in config.SYMBOLS:
+                sm = state_machines[sym]
+                c4h = candle_mgr.get_closed_candles(sym, "4h")
+                c1h = candle_mgr.get_closed_candles(sym, "1h")
+                c15m = candle_mgr.get_closed_candles(sym, "15m")
+                c5m = candle_mgr.get_closed_candles(sym, "5m")
 
-        setup, status = sm.process_candles(c4h, c1h, c15m, c5m)
-        symbol_states_summary[sym] = {
-            "bias_4h": sm.bias_4h.value,
-            "bias_1h": sm.bias_1h.value,
-            "state": sm.state.value,
-            "reason": sm.last_transition_reason
-        }
+                setup, status = sm.process_candles(c4h, c1h, c15m, c5m)
+                symbol_states_summary[sym] = {
+                    "bias_4h": sm.bias_4h.value,
+                    "bias_1h": sm.bias_1h.value,
+                    "state": sm.state.value,
+                    "reason": sm.last_transition_reason
+                }
 
-        if setup:
-            has_pos = sym in coordinator.virtual_open_positions
-            coordinator.execute_setup(
-                setup=setup,
-                current_account_equity=coordinator.virtual_equity,
-                starting_daily_equity=coordinator.virtual_equity,
-                today_realized_pnl=0.0,
-                today_trade_count=db.get_daily_trades_count(today_date),
-                open_positions_count=len(coordinator.virtual_open_positions),
-                has_position_on_symbol=has_pos
-            )
+                if setup:
+                    has_pos = sym in coordinator.virtual_open_positions
+                    coordinator.execute_setup(
+                        setup=setup,
+                        current_account_equity=coordinator.virtual_equity,
+                        starting_daily_equity=coordinator.virtual_equity,
+                        today_realized_pnl=0.0,
+                        today_trade_count=db.get_daily_trades_count(today_date),
+                        open_positions_count=len(coordinator.virtual_open_positions),
+                        has_position_on_symbol=has_pos
+                    )
 
-    # Render Terminal Dashboard
-    account_info = {
-        "equity": coordinator.virtual_equity,
-        "daily_pnl": 0.0,
-        "daily_loss_pct": 0.0,
-        "daily_trades": db.get_daily_trades_count(today_date),
-        "consecutive_losses": risk_mgr.current_consecutive_losses
-    }
-    dashboard.render_console(account_info, symbol_states_summary, list(coordinator.virtual_open_positions.values()), [])
-    print(f"[*] Verification complete. System ready for continuous automated scanning.\n")
+            # Render Terminal Dashboard
+            account_info = {
+                "equity": coordinator.virtual_equity,
+                "daily_pnl": 0.0,
+                "daily_loss_pct": 0.0,
+                "daily_trades": db.get_daily_trades_count(today_date),
+                "consecutive_losses": risk_mgr.current_consecutive_losses
+            }
+            dashboard.render_console(account_info, symbol_states_summary, list(coordinator.virtual_open_positions.values()), [])
+            if args.once:
+                print(f"[*] Verification cycle complete.\n")
+                break
+            time.sleep(args.interval)
+    except KeyboardInterrupt:
+        print("\n[*] SMC bot stopped gracefully.")
+
 
 if __name__ == "__main__":
     main()

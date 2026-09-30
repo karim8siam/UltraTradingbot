@@ -15,6 +15,7 @@ echo "--------------------------------------------------------------------------
 
 services=(
     "daily_screener"
+    "saas_platform"
     "engine_1"
     "engine_2"
     "engine_3"

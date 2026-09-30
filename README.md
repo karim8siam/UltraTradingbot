@@ -21,9 +21,16 @@ UltraTradingbot/
 │   ├── engine_8_gfs_multitimeframe/   # 1D/4H/15M Grandfather-Father-Son Trend Engine
 │   ├── engine_9_futures_swing/        # 1D/4H/1H Multi-Timeframe Swing Trend Engine
 │   └── engine_10_confluence_100pairs/ # 100-Pair 10/10 Confluence Scanner
+├── saas/                              # SaaS Platform: Multi-Tenant Web Portal & Expiration Daemon (Port 8080)
+│   ├── backend/                       # FastAPI REST API, AES-256-GCM Vault, Key Verifier, Expiry Daemon
+│   └── frontend/                      # Fintech Client Dashboard & Connection Wizard (SPA)
 ├── screener/                          # Phase 2: 24-Hour Midnight Screener (50%+ Win-Rate, 1:2 R:R)
 ├── shared/                            # Real-time dynamic active_pairs.json (Zero-Downtime volume)
-├── docker-compose.yml                 # Master 24/7 Multi-Service Orchestrator (11 Services)
+├── scripts/                           # Statistical Expectancy Audits & Analytics
+├── docker-compose.yml                 # Master 24/7 Multi-Service Orchestrator (12 Services)
+├── launch_all_local.sh                # Local process manager (Starts all 12 services in background)
+├── stop_all_local.sh                  # Graceful shutdown manager
+├── status_all.sh                      # Real-time process monitor
 ├── .env.example                       # Central credentials & configs
 └── README.md
 ```
@@ -138,9 +145,27 @@ UltraTradingbot/
 
 ---
 
+## 🌐 UltraQuant Commercial SaaS Platform (Port 8080)
+
+The suite includes an enterprise, multi-tenant SaaS frontend and automated orchestration backend (`saas/`), designed to offer algorithmic trading access to external clients and institutions without leaking proprietary strategies.
+
+### 🌟 Key SaaS Capabilities
+- **Non-Custodial Architecture:** Users connect via API Key and API Secret. The platform strictly validates that **Withdrawal permissions are DISABLED** before accepting any keys. User funds never leave their exchange account.
+- **Automated Exchange Verification:** Validates Binance USDT-M Futures (and Bybit Linear) account status, checks active futures permissions, and ensures sufficient starting balance.
+- **AES-256-GCM Vault:** All client API secrets are encrypted at rest using military-grade symmetric encryption (`master_vault.key`). Plaintext keys are never stored on disk or logged.
+- **Tiered Subscriptions:**
+  - 🎁 **7-Day Free Trial ($0):** Automatically granted to every new registrant.
+  - ⚡ **7-Day Weekly Pass ($19):** High-frequency trading access.
+  - 👑 **30-Day Monthly Pro ($69):** Maximum value institutional tier.
+- **Automated Disconnect Daemon:** Background scheduler continuously monitors subscription expiry. The exact second a user's subscription expires, the system automatically revokes exchange connectivity, locks the account, and terminates all active trade dispatching.
+- **Strategy Confidentiality:** Branded institutionally as *"UltraQuant 10-Core Multi-Regime Algorithmic Suite"*. Proprietary Fair Value Gap algorithms, ML models, and confluence formulas are never exposed in user dashboards.
+- **Live Client Dashboard:** Real-time countdown timer, live trade telemetry stream, daily session PnL cards, and an instant emergency account disconnect button.
+
+---
+
 ## 🚀 Quick Start (Local / VPS)
 
-### Option A: Run with Docker Compose (Recommended for 24/7 Hosting)
+### Option A: Run Full 12-Service Stack with Docker Compose (Recommended for Production / VPS)
 
 ```bash
 # 1. Clone repository
@@ -150,18 +175,37 @@ cd UltraTradingbot
 # 2. Copy and configure environment variables
 cp .env.example .env
 
-# 3. Start all engines in background
-docker compose up -d
+# 3. Build & start all 12 services (10 Engines + 24H Screener + SaaS Web Portal)
+docker compose up -d --build
 
-# 4. View logs for a specific engine
-docker compose logs -f engine_1_multiregime_ml
-docker compose logs -f engine_6_fibonacci_pullback
+# 4. Open the Web Dashboard in your browser:
+# http://localhost:8080 (or http://YOUR_SERVER_IP:8080)
 
-# 5. Stop all engines
+# 5. Inspect status and logs:
+docker compose ps
+docker compose logs -f saas_platform
+docker compose logs -f daily_screener
+
+# 6. Stop all services:
 docker compose down
 ```
 
-### Option B: Run an Individual Engine Locally
+### Option B: Run Locally with Master Control Scripts
+
+```bash
+# 1. Launch all 10 engines + screener + SaaS platform concurrently in background:
+./launch_all_local.sh
+
+# 2. Check live process health, PIDs, and memory usage:
+./status_all.sh
+
+# 3. View SaaS Web App at http://localhost:8080
+
+# 4. Gracefully terminate all processes:
+./stop_all_local.sh
+```
+
+### Option C: Run an Individual Engine Locally
 
 ```bash
 # Run Engine 6 (Deterministic Fibonacci Pullback)
