@@ -84,4 +84,17 @@ services:
       - ./engines/engine_7_institutional_fvg/data:/app/data
       - ./engines/engine_7_institutional_fvg/bot_live.log:/app/bot_live.log
 
+  engine_8_gfs_multitimeframe:
+    build:
+      context: ./engines/engine_8_gfs_multitimeframe
+      dockerfile: Dockerfile
+    container_name: engine_8_gfs_multitimeframe
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./engines/engine_8_gfs_multitimeframe/data:/app/data
+      - ./engines/engine_8_gfs_multitimeframe/gfs_live.log:/app/gfs_live.log
+
+
 

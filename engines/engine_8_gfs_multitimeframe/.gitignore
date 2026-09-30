@@ -1,0 +1,21 @@
+# Local environment & secrets
+.env
+*.env
+
+# Runtime data & sqlite databases
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+gfs_live.log
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS
+.DS_Store

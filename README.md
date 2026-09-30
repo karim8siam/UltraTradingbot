@@ -94,6 +94,19 @@ UltraTradingbot/
 * **Execution & Protection:** Immediate market entry upon confirmation, predefined server-side cloud SL/TP orders on Binance (`closePosition=True`)
 * **Pairs:** **Top 30 Liquid Binance USDT-M Futures Pairs** (`BTCUSDT`, `ETHUSDT`, `BNBUSDT`, `SOLUSDT`, `XRPUSDT`, `DOGEUSDT`, `ADAUSDT`, `AVAXUSDT`, `LINKUSDT`, `SUIUSDT`, `NEARUSDT`, `APTUSDT`, `LTCUSDT`, `BCHUSDT`, `DOTUSDT`, `POLUSDT`, `ETCUSDT`, `XLMUSDT`, `FILUSDT`, `INJUSDT`, `RENDERUSDT`, `1000PEPEUSDT`, `1000SHIBUSDT`, `1000BONKUSDT`, `1000FLOKIUSDT`, `TIAUSDT`, `SEIUSDT`, `FETUSDT`, `ARBUSDT`, `OPUSDT`).
 
+### 8. Engine 8: Grandfather-Father-Son (GFS) Multi-Timeframe Trend Engine
+* **Timeframes:** 1D Macro Trend (Grandfather: EMA50/200) | 4H Pullback Zone (Father: EMA20/50) | 15M Market Structure Shift & Displacement (Son)
+* **Strategy:** Multi-Timeframe Trend Alignment & Pullback System
+  * 1D Grandfather Trend: EMA50 > EMA200 + Positive Slope for Longs (vice-versa for Shorts)
+  * 4H Father Pullback Zone: Price retracts into the EMA20–EMA50 value area
+  * 15M Son Execution: Market Structure Shift (MSS) with verified displacement candle
+  * 14-Factor Quantitative Setup Scorer (Requires Score >= 11)
+* **Risk & Leverage:** Strictly **2.0% Maximum Risk**, **5x Isolated Leverage**, **Strict 1:2 Risk/Reward Ratio** (Loss \$1 $\rightarrow$ Win \$2)
+* **Exit Target:** **+2.0% Account Equity Take Profit**, **-1.0% Account Equity Stop Loss**
+* **Trade Constraints:** **Max 1 Concurrent Trade**, uncapped daily trade count
+* **Execution & Protection:** Immediate market entry with native Binance Futures bracket orders (`TAKE_PROFIT_MARKET` & `STOP_MARKET`, `reduceOnly=True`) and OCO residual clean-up
+* **Pairs:** **Top 30 Liquid Binance USDT-M Futures Pairs** (`BTCUSDT`, `ETHUSDT`, `SOLUSDT`, `BNBUSDT`, `XRPUSDT`, `DOGEUSDT`, `ADAUSDT`, `AVAXUSDT`, `LINKUSDT`, `SUIUSDT`, `NEARUSDT`, `APTUSDT`, `LTCUSDT`, `BCHUSDT`, `DOTUSDT`, `POLUSDT`, `ETCUSDT`, `XLMUSDT`, `FILUSDT`, `INJUSDT`, `RENDERUSDT`, `1000PEPEUSDT`, `1000SHIBUSDT`, `1000BONKUSDT`, `1000FLOKIUSDT`, `TIAUSDT`, `SEIUSDT`, `FETUSDT`, `ARBUSDT`, `OPUSDT`).
+
 
 ---
 
