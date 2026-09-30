@@ -1,0 +1,34 @@
+# Environment & Secrets
+.env
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# Data & Database
+data/
+*.db
+*.sqlite3
+*.joblib
+*.pkl
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
