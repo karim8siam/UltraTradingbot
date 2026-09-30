@@ -57,28 +57,3 @@ class MultiTenantTradeDispatcher:
             VALUES (?, ?, ?, ?, ?, ?, ?, 'CLOSED', ?)
             """, (user_id, engine_name, symbol, side, entry_price, entry_price * (1.02 if side == 'BUY' else 0.98), pnl_usd, now_str))
             conn.commit()
-
-    @staticmethod
-    def generate_demo_trades_for_user(user_id: int):
-        """
-        Populates initial real-time sample trades from the 10-engine suite
-        so the client dashboard shows immediate trade activity.
-        """
-        engines = [
-            ("Core Alpha (Multi-Regime Neural)", "BTCUSDT", "BUY", 65420.0, 2.50),
-            ("Core Beta (Momentum Breakout)", "SOLUSDT", "BUY", 152.40, 1.80),
-            ("Core Gamma (Liquidity Displacement)", "ETHUSDT", "BUY", 2640.50, 3.20),
-            ("Core Delta (Golden Fibonacci)", "BNBUSDT", "BUY", 580.10, 2.10),
-            ("Core Epsilon (10-Point Confluence)", "NEARUSDT", "BUY", 4.85, 1.40),
-            ("Core Zeta (Structural Trend)", "APTUSDT", "SELL", 8.20, 1.95),
-            ("Core Eta (Institutional FVG)", "DOGEUSDT", "BUY", 0.125, 1.15),
-            ("Core Theta (Multi-Timeframe Swings)", "SUIUSDT", "BUY", 1.85, 2.40),
-        ]
-
-        with get_db() as conn:
-            existing = conn.execute("SELECT COUNT(*) as count FROM trades WHERE user_id = ?", (user_id,)).fetchone()
-            if existing and existing["count"] > 0:
-                return
-
-        for eng, sym, side, price, pnl in engines:
-            MultiTenantTradeDispatcher.record_client_trade(user_id, eng, sym, side, price, pnl)

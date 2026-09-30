@@ -1,5 +1,5 @@
 {
-  "last_screened_at": "2026-09-30 14:39:07 UTC",
+  "last_screened_at": "2026-09-30 14:43:30 UTC",
   "valid_until": "2026-10-01 00:00:00 UTC",
   "cycle_duration": "24h (Midnight to Midnight)",
   "min_win_rate_gate": "50%",
@@ -228,7 +228,7 @@
         "win_rate": 100.0,
         "net_r": 6.0
       },
-      "price": 2676.55
+      "price": 2677.16
     },
     {
       "symbol": "SOLUSDT",
@@ -254,7 +254,7 @@
         "win_rate": 100.0,
         "net_r": 8.0
       },
-      "price": 119.02
+      "price": 118.92
     },
     {
       "symbol": "DOGEUSDT",
@@ -280,7 +280,7 @@
         "win_rate": 100.0,
         "net_r": 2.0
       },
-      "price": 0.09478
+      "price": 0.09468
     },
     {
       "symbol": "ADAUSDT",
@@ -306,7 +306,7 @@
         "win_rate": 100.0,
         "net_r": 4.0
       },
-      "price": 0.2452
+      "price": 0.2446
     },
     {
       "symbol": "LINKUSDT",
@@ -332,7 +332,7 @@
         "win_rate": 100.0,
         "net_r": 2.0
       },
-      "price": 14.16
+      "price": 14.118
     },
     {
       "symbol": "LTCUSDT",
@@ -358,7 +358,7 @@
         "win_rate": 100.0,
         "net_r": 2.0
       },
-      "price": 66.7
+      "price": 66.52
     },
     {
       "symbol": "BCHUSDT",
@@ -384,7 +384,7 @@
         "win_rate": 100.0,
         "net_r": 4.0
       },
-      "price": 305.0
+      "price": 304.73
     },
     {
       "symbol": "1000PEPEUSDT",
@@ -410,7 +410,7 @@
         "win_rate": 100.0,
         "net_r": 2.0
       },
-      "price": 0.0043234
+      "price": 0.0043154
     },
     {
       "symbol": "UNIUSDT",
@@ -436,7 +436,7 @@
         "win_rate": 66.7,
         "net_r": 3.0
       },
-      "price": 8.835
+      "price": 8.81
     },
     {
       "symbol": "ARBUSDT",
@@ -462,7 +462,7 @@
         "win_rate": 100.0,
         "net_r": 2.0
       },
-      "price": 0.20279
+      "price": 0.20264
     },
     {
       "symbol": "INJUSDT",
@@ -514,7 +514,7 @@
         "win_rate": 100.0,
         "net_r": 4.0
       },
-      "price": 0.26757
+      "price": 0.26337
     },
     {
       "symbol": "AAVEUSDT",
@@ -540,7 +540,7 @@
         "win_rate": 100.0,
         "net_r": 2.0
       },
-      "price": 159.33
+      "price": 159.03
     },
     {
       "symbol": "ICPUSDT",
@@ -566,7 +566,7 @@
         "win_rate": 100.0,
         "net_r": 10.0
       },
-      "price": 3.394
+      "price": 3.401
     },
     {
       "symbol": "HBARUSDT",
@@ -592,7 +592,7 @@
         "win_rate": 100.0,
         "net_r": 4.0
       },
-      "price": 0.10791
+      "price": 0.10766
     }
   ]
 }

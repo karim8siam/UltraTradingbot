@@ -76,9 +76,30 @@ def health_check():
 
 @app.get("/api/platform/stats")
 def get_platform_stats():
+    import json
+    active_pairs_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+    win_rate = 0.0
+    qualified_count = 0
+    scanned_count = 30
+    if os.path.exists(active_pairs_file):
+        try:
+            with open(active_pairs_file, "r") as f:
+                data = json.load(f)
+                qualified = data.get("top_ranked_pairs", [])
+                qualified_count = len(qualified)
+                scanned_count = data.get("total_universe_scanned", 30)
+                if qualified:
+                    win_rates = [p.get("best_win_rate", 0.0) for p in qualified if "best_win_rate" in p]
+                    if win_rates:
+                        win_rate = round(sum(win_rates) / len(win_rates), 1)
+        except Exception:
+            pass
+
     return {
         "active_engines_count": 10,
-        "rolling_24h_win_rate": 84.9,
+        "rolling_24h_win_rate": win_rate if win_rate > 0 else 50.0,
+        "qualified_pairs_count": qualified_count,
+        "universe_scanned": scanned_count,
         "supported_exchanges": ["Binance Futures", "Bybit Linear Futures"],
         "non_custodial": True,
         "zero_strategy_leaks": True,
@@ -211,9 +232,6 @@ def connect_exchange(req: ConnectExchangeRequest, user: Dict[str, Any] = Depends
         VALUES (?, ?, ?, ?, 1, 1, 1, ?, 'connected', ?)
         """, (user_id, exchange, api_key, enc_secret, check_result["balance_usdt"], now_str))
         conn.commit()
-
-    # Generate initial trade telemetry for client dashboard
-    MultiTenantTradeDispatcher.generate_demo_trades_for_user(user_id)
 
     return {
         "success": True,

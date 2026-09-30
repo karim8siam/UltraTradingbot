@@ -116,7 +116,7 @@
         </div>
         <div class="glass-card p-5 rounded-2xl text-left">
           <div class="text-xs uppercase font-mono text-slate-400 font-semibold">24h Vetted Win Rate</div>
-          <div class="text-3xl font-extrabold text-emerald-400 mt-1">84.9%</div>
+          <div id="stat-win-rate" class="text-3xl font-extrabold text-emerald-400 mt-1">--%</div>
           <div class="text-xs text-slate-400 mt-1">Daily Midnight Screener</div>
         </div>
         <div class="glass-card p-5 rounded-2xl text-left">
@@ -145,7 +145,7 @@
             <span class="text-xs font-mono uppercase px-2.5 py-1 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 font-bold" id="dash-tier-badge">7-DAY FREE TRIAL</span>
             <span class="text-xs font-mono uppercase px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold" id="dash-status-badge">ACTIVE</span>
           </div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">Welcome, <span id="dash-user-email">trader@client.com</span></h2>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">Welcome, <span id="dash-user-email">Trader</span></h2>
           <p class="text-sm text-slate-400 mt-1">All 10 algorithmic cores are synchronized with your account.</p>
         </div>
 
@@ -181,7 +181,7 @@
           </div>
 
           <!-- Connection Form -->
-          <form id="connect-exchange-form" onsubmit="handleConnectExchange(event)" class="space-y-4">
+          <form id="connect-exchange-form" onsubmit="handleConnectExchange(event)" autocomplete="off" class="space-y-4">
             <div>
               <label class="block text-xs font-mono text-slate-400 uppercase mb-1">Target Exchange</label>
               <select id="conn-exchange" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
@@ -192,12 +192,12 @@
 
             <div>
               <label class="block text-xs font-mono text-slate-400 uppercase mb-1">API Key</label>
-              <input type="text" id="conn-api-key" required placeholder="Enter your exchange API key" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-cyan-500">
+              <input type="text" id="conn-api-key" name="exchange_api_key" required placeholder="" autocomplete="off" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-cyan-500">
             </div>
 
             <div>
               <label class="block text-xs font-mono text-slate-400 uppercase mb-1">API Secret</label>
-              <input type="password" id="conn-api-secret" required placeholder="Enter your exchange API secret" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-cyan-500">
+              <input type="password" id="conn-api-secret" name="exchange_api_secret" required placeholder="" autocomplete="new-password" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-cyan-500">
             </div>
 
             <!-- Permission Checklist Guard -->
@@ -237,7 +237,7 @@
             </div>
             <div class="text-right">
               <div class="text-xs font-mono text-slate-400">Session PnL</div>
-              <div id="dash-total-pnl" class="text-lg font-mono font-bold text-emerald-400">+$18.60 USDT</div>
+              <div id="dash-total-pnl" class="text-lg font-mono font-bold text-slate-400">$0.00 USDT</div>
             </div>
           </div>
 
@@ -254,7 +254,13 @@
                 </tr>
               </thead>
               <tbody id="trade-log-rows" class="divide-y divide-slate-800/60 text-slate-200">
-                <!-- Dynamically loaded -->
+                <tr>
+                  <td colspan="5" class="py-12 text-center text-slate-500 font-sans">
+                    <i class="fa-solid fa-chart-line text-2xl mb-2 block text-slate-600"></i>
+                    No live trades executed yet.<br>
+                    <span class="text-[11px] text-slate-500">Connect your exchange API keys above to begin receiving automated trades from all 10 engines.</span>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -450,18 +456,18 @@
       <h3 id="auth-title" class="text-2xl font-bold text-white mb-2">Create Your Account</h3>
       <p id="auth-subtitle" class="text-xs text-slate-400 mb-6">Start your 7-day free trial with full 10-core access.</p>
 
-      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" autocomplete="off" class="space-y-4">
         <div id="auth-name-container">
           <label class="block text-xs font-mono text-slate-400 uppercase mb-1">Full Name</label>
-          <input type="text" id="auth-name" placeholder="John Doe" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
+          <input type="text" id="auth-name" name="new_full_name" placeholder="" autocomplete="off" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
         </div>
         <div>
           <label class="block text-xs font-mono text-slate-400 uppercase mb-1">Email Address</label>
-          <input type="email" id="auth-email" required placeholder="trader@domain.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
+          <input type="email" id="auth-email" name="new_user_email" required placeholder="" autocomplete="off" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
         </div>
         <div>
           <label class="block text-xs font-mono text-slate-400 uppercase mb-1">Password</label>
-          <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
+          <input type="password" id="auth-password" name="new_user_password" required placeholder="" autocomplete="new-password" value="" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500">
         </div>
 
         <button type="submit" id="auth-submit-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold text-sm shadow-md transition">
@@ -487,24 +493,57 @@
 
     // Initialize application
     window.addEventListener('DOMContentLoaded', () => {
+      loadPlatformStats();
       if (authToken) {
         checkAuthProfile();
       }
     });
 
+    async function loadPlatformStats() {
+      try {
+        const res = await fetch('/api/platform/stats');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.rolling_24h_win_rate) {
+          const el = document.getElementById('stat-win-rate');
+          if (el) el.innerText = `${data.rolling_24h_win_rate}%`;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function clearAuthInputs() {
+      const form = document.getElementById('auth-form');
+      if (form) form.reset();
+      const n = document.getElementById('auth-name');
+      if (n) n.value = '';
+      const em = document.getElementById('auth-email');
+      if (em) em.value = '';
+      const pw = document.getElementById('auth-password');
+      if (pw) pw.value = '';
+      const errBox = document.getElementById('auth-error');
+      if (errBox) errBox.classList.add('hidden');
+    }
+
     function openAuthModal(mode) {
       authMode = mode;
       document.getElementById('auth-modal').classList.remove('hidden');
+      clearAuthInputs();
+      setTimeout(clearAuthInputs, 20);
+      setTimeout(clearAuthInputs, 100);
       updateAuthModalUI();
     }
 
     function closeAuthModal() {
       document.getElementById('auth-modal').classList.add('hidden');
-      document.getElementById('auth-error').classList.add('hidden');
+      clearAuthInputs();
     }
 
     function toggleAuthMode() {
       authMode = authMode === 'register' ? 'login' : 'register';
+      clearAuthInputs();
+      setTimeout(clearAuthInputs, 20);
       updateAuthModalUI();
     }
 
@@ -689,19 +728,47 @@
         if (!res.ok) return;
         const data = await res.json();
         
-        document.getElementById('dash-total-pnl').innerText = `+$${data.total_pnl_usd.toFixed(2)} USDT`;
+        const pnlEl = document.getElementById('dash-total-pnl');
         const tbody = document.getElementById('trade-log-rows');
         tbody.innerHTML = '';
+
+        if (!data.trades || data.trades.length === 0) {
+          pnlEl.innerText = '$0.00 USDT';
+          pnlEl.className = 'text-lg font-mono font-bold text-slate-400';
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5" class="py-12 text-center text-slate-500 font-sans">
+                <i class="fa-solid fa-chart-line text-2xl mb-2 block text-slate-600"></i>
+                No live trades executed yet.<br>
+                <span class="text-[11px] text-slate-500">Connect your exchange API keys above to begin receiving automated trades from all 10 engines.</span>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        const pnl = data.total_pnl_usd || 0.0;
+        if (pnl > 0) {
+          pnlEl.innerText = `+$${pnl.toFixed(2)} USDT`;
+          pnlEl.className = 'text-lg font-mono font-bold text-emerald-400';
+        } else if (pnl < 0) {
+          pnlEl.innerText = `-$${Math.abs(pnl).toFixed(2)} USDT`;
+          pnlEl.className = 'text-lg font-mono font-bold text-rose-400';
+        } else {
+          pnlEl.innerText = '$0.00 USDT';
+          pnlEl.className = 'text-lg font-mono font-bold text-slate-400';
+        }
 
         data.trades.forEach(t => {
           const row = document.createElement('tr');
           const isBuy = t.side === 'BUY';
+          const p = t.pnl_usd || 0;
           row.innerHTML = `
             <td class="py-2.5 px-3 font-medium text-white">${t.engine_name}</td>
             <td class="py-2.5 px-3 text-cyan-400 font-bold">${t.symbol}</td>
             <td class="py-2.5 px-3"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${isBuy ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}">${t.side}</span></td>
             <td class="py-2.5 px-3 text-slate-300">$${t.entry_price.toLocaleString()}</td>
-            <td class="py-2.5 px-3 text-right font-bold text-emerald-400">+$${t.pnl_usd.toFixed(2)}</td>
+            <td class="py-2.5 px-3 text-right font-bold ${p >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${p >= 0 ? '+' : '-'}$${Math.abs(p).toFixed(2)}</td>
           `;
           tbody.appendChild(row);
         });
