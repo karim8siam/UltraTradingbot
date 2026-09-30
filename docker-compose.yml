@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  daily_screener:
+    build:
+      context: ./screener
+      dockerfile: Dockerfile
+    container_name: daily_screener
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./shared:/app/shared
+
   engine_1_multiregime_ml:
     build:
       context: ./engines/engine_1_multiregime_ml
@@ -14,6 +25,7 @@ services:
     volumes:
       - ./engines/engine_1_multiregime_ml/data:/app/data
       - ./engines/engine_1_multiregime_ml/logs:/app/logs
+      - ./shared:/app/shared
 
   engine_2_momentum_3candle:
     build:
@@ -25,6 +37,7 @@ services:
       - .env
     volumes:
       - ./engines/engine_2_momentum_3candle/active_trades.json:/app/active_trades.json
+      - ./shared:/app/shared
 
   engine_3_confluence_scalper:
     build:
@@ -36,6 +49,7 @@ services:
       - .env
     volumes:
       - ./engines/engine_3_confluence_scalper/active_trades.json:/app/active_trades.json
+      - ./shared:/app/shared
 
   engine_4_reversal_5candle:
     build:
@@ -47,6 +61,7 @@ services:
       - .env
     volumes:
       - ./engines/engine_4_reversal_5candle/active_trades.json:/app/active_trades.json
+      - ./shared:/app/shared
 
   engine_5_deterministic_smc:
     build:
@@ -59,6 +74,7 @@ services:
     volumes:
       - ./engines/engine_5_deterministic_smc/smc_trading.db:/app/smc_trading.db
       - ./engines/engine_5_deterministic_smc/bot.log:/app/bot.log
+      - ./shared:/app/shared
 
   engine_6_fibonacci_pullback:
     build:
@@ -71,6 +87,7 @@ services:
     volumes:
       - ./engines/engine_6_fibonacci_pullback/data:/app/data
       - ./engines/engine_6_fibonacci_pullback/trading_bot.log:/app/trading_bot.log
+      - ./shared:/app/shared
 
   engine_7_institutional_fvg:
     build:
@@ -83,6 +100,7 @@ services:
     volumes:
       - ./engines/engine_7_institutional_fvg/data:/app/data
       - ./engines/engine_7_institutional_fvg/bot_live.log:/app/bot_live.log
+      - ./shared:/app/shared
 
   engine_8_gfs_multitimeframe:
     build:
@@ -95,6 +113,7 @@ services:
     volumes:
       - ./engines/engine_8_gfs_multitimeframe/data:/app/data
       - ./engines/engine_8_gfs_multitimeframe/gfs_live.log:/app/gfs_live.log
+      - ./shared:/app/shared
 
   engine_9_futures_swing:
     build:
@@ -107,6 +126,7 @@ services:
     volumes:
       - ./engines/engine_9_futures_swing/data:/app/data
       - ./engines/engine_9_futures_swing/bot.log:/app/bot.log
+      - ./shared:/app/shared
 
   engine_10_confluence_100pairs:
     build:
@@ -118,8 +138,4 @@ services:
       - .env
     volumes:
       - ./engines/engine_10_confluence_100pairs/bot.log:/app/bot.log
-
-
-
-
-
+      - ./shared:/app/shared

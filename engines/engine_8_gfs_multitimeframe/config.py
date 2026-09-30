@@ -126,9 +126,25 @@ BINANCE_FUTURES_TESTNET_WS = "wss://stream.binancefuture.com/ws"
 # Database Configuration
 DATABASE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "gfs_bot.db")
 
+def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[str]:
+    import json
+    shared_active = os.getenv("ACTIVE_PAIRS_FILE", "/app/shared/active_pairs.json")
+    if not os.path.exists(shared_active):
+        shared_active = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+    if os.path.exists(shared_active):
+        try:
+            with open(shared_active, "r") as f:
+                pair_data = json.load(f)
+                alloc = pair_data.get("engine_allocations", {}).get(engine_key)
+                if alloc:
+                    return alloc
+        except Exception:
+            pass
+    return default_symbols
+
 @dataclass
 class BotConfig:
-    symbols: List[str] = field(default_factory=lambda: list(DEFAULT_SYMBOLS))
+    symbols: List[str] = field(default_factory=lambda: load_dynamic_symbols("engine_8_gfs_multitimeframe", list(DEFAULT_SYMBOLS)))
     paper_trading: bool = PAPER_TRADING
     binance_testnet: bool = BINANCE_TESTNET
     live_trading: bool = LIVE_TRADING

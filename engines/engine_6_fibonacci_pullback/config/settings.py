@@ -28,6 +28,22 @@ def _load_env_file(filepath: str = ".env"):
 _load_env_file()
 
 
+def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[str]:
+    import json
+    shared_active = os.getenv("ACTIVE_PAIRS_FILE", "/app/shared/active_pairs.json")
+    if not os.path.exists(shared_active):
+        shared_active = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+    if os.path.exists(shared_active):
+        try:
+            with open(shared_active, "r") as f:
+                pair_data = json.load(f)
+                alloc = pair_data.get("engine_allocations", {}).get(engine_key)
+                if alloc:
+                    return alloc
+        except Exception:
+            pass
+    return default_symbols
+
 @dataclass
 class Settings:
     # API Credentials (never logged, never hardcoded)
@@ -56,11 +72,11 @@ class Settings:
 
     # Strategy Parameters
     symbols: List[str] = field(
-        default_factory=lambda: [
+        default_factory=lambda: load_dynamic_symbols("engine_6_fibonacci_pullback", [
             s.strip().upper()
             for s in os.getenv("SYMBOLS", ",".join(constants.DEFAULT_SYMBOLS)).split(",")
             if s.strip()
-        ]
+        ])
     )
     risk_per_trade: float = float(os.getenv("RISK_PER_TRADE", str(constants.RISK_PER_TRADE)))
     default_leverage: int = int(os.getenv("DEFAULT_LEVERAGE", str(constants.DEFAULT_LEVERAGE)))

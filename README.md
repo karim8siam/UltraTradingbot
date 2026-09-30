@@ -8,15 +8,22 @@ All engines operate **fully decoupled and isolated** — if one engine encounter
 
 ## 🏗️ Architecture Overview
 
-```
+```text
 UltraTradingbot/
 ├── engines/
 │   ├── engine_1_multiregime_ml/       # 5M/15M/1H Multi-Regime + ML Ensemble + Gemini AI
 │   ├── engine_2_momentum_3candle/     # 15M 3-Candle Momentum & Volume Breakout
 │   ├── engine_3_confluence_scalper/   # 10-Point Confluence Scalper (1.55x ATR, 1% Risk, 5x Lev)
-│   ├── ...                            # Future Engines (SMC, Fibonacci, FVG, GFS, Swing)
-├── screener/                          # Phase 2: 7-Day 60% Win-Rate Scanner (30 coins)
-├── docker-compose.yml                 # Master 24/7 Multi-Service Orchestrator
+│   ├── engine_4_reversal_5candle/     # 15M 5-Candle Momentum Exhaustion Reversal
+│   ├── engine_5_deterministic_smc/    # 4H/1H/15M/5M Smart Money Concepts (FVG + MSS)
+│   ├── engine_6_fibonacci_pullback/   # 4H/1H/15M/5M Fibonacci Pullback (Golden Pocket)
+│   ├── engine_7_institutional_fvg/    # 4H/1H/15M/5M Institutional FVG (1:2 R:R)
+│   ├── engine_8_gfs_multitimeframe/   # 1D/4H/15M Grandfather-Father-Son Trend Engine
+│   ├── engine_9_futures_swing/        # 1D/4H/1H Multi-Timeframe Swing Trend Engine
+│   └── engine_10_confluence_100pairs/ # 100-Pair 10/10 Confluence Scanner
+├── screener/                          # Phase 2: 24-Hour Midnight Screener (50%+ Win-Rate, 1:2 R:R)
+├── shared/                            # Real-time dynamic active_pairs.json (Zero-Downtime volume)
+├── docker-compose.yml                 # Master 24/7 Multi-Service Orchestrator (11 Services)
 ├── .env.example                       # Central credentials & configs
 └── README.md
 ```

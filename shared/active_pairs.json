@@ -1,0 +1,590 @@
+{
+  "last_screened_at": "2026-09-30 09:01:38 UTC",
+  "valid_until": "2026-10-01 00:00:00 UTC",
+  "cycle_duration": "24h (Midnight to Midnight)",
+  "min_win_rate_gate": "50%",
+  "target_risk_reward": "1:2.0",
+  "total_universe_scanned": 30,
+  "engine_allocations": {
+    "engine_1_multiregime_ml": [
+      "APTUSDT",
+      "WLDUSDT"
+    ],
+    "engine_2_momentum_3candle": [
+      "BNBUSDT",
+      "LINKUSDT",
+      "APTUSDT",
+      "BCHUSDT",
+      "UNIUSDT",
+      "FETUSDT",
+      "ONDOUSDT",
+      "WLDUSDT",
+      "AAVEUSDT",
+      "XLMUSDT",
+      "FILUSDT"
+    ],
+    "engine_3_confluence_scalper": [
+      "APTUSDT",
+      "WLDUSDT"
+    ],
+    "engine_4_reversal_5candle": [
+      "BNBUSDT",
+      "LINKUSDT",
+      "APTUSDT",
+      "BCHUSDT",
+      "UNIUSDT",
+      "FETUSDT",
+      "ONDOUSDT",
+      "WLDUSDT",
+      "AAVEUSDT",
+      "XLMUSDT",
+      "FILUSDT"
+    ],
+    "engine_5_deterministic_smc": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLUSDT",
+      "BNBUSDT",
+      "XRPUSDT",
+      "DOGEUSDT",
+      "ADAUSDT",
+      "SUIUSDT",
+      "AVAXUSDT",
+      "LINKUSDT",
+      "NEARUSDT",
+      "APTUSDT",
+      "LTCUSDT",
+      "BCHUSDT",
+      "1000PEPEUSDT",
+      "UNIUSDT",
+      "TAOUSDT",
+      "ARBUSDT",
+      "ONDOUSDT",
+      "ENAUSDT",
+      "WLDUSDT",
+      "AAVEUSDT",
+      "XLMUSDT",
+      "ICPUSDT",
+      "HBARUSDT",
+      "DOTUSDT",
+      "FILUSDT"
+    ],
+    "engine_6_fibonacci_pullback": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLUSDT",
+      "BNBUSDT",
+      "XRPUSDT",
+      "DOGEUSDT",
+      "ADAUSDT",
+      "SUIUSDT",
+      "AVAXUSDT",
+      "LINKUSDT",
+      "NEARUSDT",
+      "APTUSDT",
+      "LTCUSDT",
+      "BCHUSDT",
+      "1000PEPEUSDT",
+      "UNIUSDT",
+      "TAOUSDT",
+      "ARBUSDT",
+      "ONDOUSDT",
+      "ENAUSDT",
+      "WLDUSDT",
+      "AAVEUSDT",
+      "XLMUSDT",
+      "ICPUSDT",
+      "HBARUSDT",
+      "DOTUSDT",
+      "FILUSDT"
+    ],
+    "engine_7_institutional_fvg": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLUSDT",
+      "BNBUSDT",
+      "XRPUSDT",
+      "DOGEUSDT",
+      "ADAUSDT",
+      "SUIUSDT",
+      "AVAXUSDT",
+      "LINKUSDT",
+      "NEARUSDT",
+      "APTUSDT",
+      "LTCUSDT",
+      "BCHUSDT",
+      "1000PEPEUSDT",
+      "UNIUSDT",
+      "TAOUSDT",
+      "ARBUSDT",
+      "ONDOUSDT",
+      "ENAUSDT",
+      "WLDUSDT",
+      "AAVEUSDT",
+      "XLMUSDT",
+      "ICPUSDT",
+      "HBARUSDT",
+      "DOTUSDT",
+      "FILUSDT"
+    ],
+    "engine_8_gfs_multitimeframe": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLUSDT",
+      "BNBUSDT",
+      "XRPUSDT",
+      "DOGEUSDT",
+      "ADAUSDT",
+      "SUIUSDT",
+      "AVAXUSDT",
+      "LINKUSDT",
+      "NEARUSDT",
+      "APTUSDT",
+      "LTCUSDT",
+      "BCHUSDT",
+      "1000PEPEUSDT",
+      "UNIUSDT",
+      "TAOUSDT",
+      "ARBUSDT",
+      "ONDOUSDT",
+      "ENAUSDT",
+      "WLDUSDT",
+      "AAVEUSDT",
+      "XLMUSDT",
+      "ICPUSDT",
+      "HBARUSDT",
+      "DOTUSDT",
+      "FILUSDT"
+    ],
+    "engine_9_futures_swing": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLUSDT",
+      "BNBUSDT",
+      "XRPUSDT",
+      "DOGEUSDT",
+      "ADAUSDT",
+      "SUIUSDT",
+      "AVAXUSDT",
+      "LINKUSDT",
+      "NEARUSDT",
+      "APTUSDT",
+      "LTCUSDT",
+      "BCHUSDT",
+      "1000PEPEUSDT",
+      "UNIUSDT",
+      "TAOUSDT",
+      "ARBUSDT",
+      "ONDOUSDT",
+      "ENAUSDT",
+      "WLDUSDT",
+      "AAVEUSDT",
+      "XLMUSDT",
+      "ICPUSDT",
+      "HBARUSDT",
+      "DOTUSDT",
+      "FILUSDT"
+    ],
+    "engine_10_confluence_100pairs": [
+      "APTUSDT",
+      "WLDUSDT"
+    ]
+  },
+  "summary": {
+    "qualified_confluence_count": 2,
+    "qualified_momentum_count": 11,
+    "qualified_smc_count": 27
+  },
+  "top_ranked_pairs": [
+    {
+      "symbol": "ETHUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 2,
+        "wins": 0,
+        "losses": 2,
+        "win_rate": 0.0,
+        "net_r": -2.0
+      },
+      "momentum": {
+        "trades": 12,
+        "wins": 2,
+        "losses": 10,
+        "win_rate": 16.7,
+        "net_r": -7.0
+      },
+      "smc_fvg": {
+        "trades": 2,
+        "wins": 2,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 4.0
+      },
+      "price": 2670.85
+    },
+    {
+      "symbol": "SOLUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "win_rate": 0.0,
+        "net_r": 0.0
+      },
+      "momentum": {
+        "trades": 5,
+        "wins": 1,
+        "losses": 4,
+        "win_rate": 20.0,
+        "net_r": -2.5
+      },
+      "smc_fvg": {
+        "trades": 3,
+        "wins": 3,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 6.0
+      },
+      "price": 118.26
+    },
+    {
+      "symbol": "BNBUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 2,
+        "wins": 0,
+        "losses": 2,
+        "win_rate": 0.0,
+        "net_r": -2.0
+      },
+      "momentum": {
+        "trades": 14,
+        "wins": 8,
+        "losses": 6,
+        "win_rate": 57.1,
+        "net_r": 6.0
+      },
+      "smc_fvg": {
+        "trades": 4,
+        "wins": 4,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 8.0
+      },
+      "price": 760.79
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 2,
+        "wins": 0,
+        "losses": 2,
+        "win_rate": 0.0,
+        "net_r": -2.0
+      },
+      "momentum": {
+        "trades": 11,
+        "wins": 5,
+        "losses": 6,
+        "win_rate": 45.5,
+        "net_r": 1.5
+      },
+      "smc_fvg": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 2.0
+      },
+      "price": 0.09364
+    },
+    {
+      "symbol": "SUIUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "net_r": -1.0
+      },
+      "momentum": {
+        "trades": 7,
+        "wins": 2,
+        "losses": 5,
+        "win_rate": 28.6,
+        "net_r": -2.0
+      },
+      "smc_fvg": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 2.0
+      },
+      "price": 1.1587
+    },
+    {
+      "symbol": "LINKUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "win_rate": 0.0,
+        "net_r": 0.0
+      },
+      "momentum": {
+        "trades": 5,
+        "wins": 3,
+        "losses": 2,
+        "win_rate": 60.0,
+        "net_r": 2.5
+      },
+      "smc_fvg": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 2.0
+      },
+      "price": 14.301
+    },
+    {
+      "symbol": "APTUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 2.0
+      },
+      "momentum": {
+        "trades": 10,
+        "wins": 6,
+        "losses": 4,
+        "win_rate": 60.0,
+        "net_r": 5.0
+      },
+      "smc_fvg": {
+        "trades": 2,
+        "wins": 1,
+        "losses": 1,
+        "win_rate": 50.0,
+        "net_r": 1.0
+      },
+      "price": 0.7938
+    },
+    {
+      "symbol": "LTCUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "win_rate": 0.0,
+        "net_r": 0.0
+      },
+      "momentum": {
+        "trades": 11,
+        "wins": 5,
+        "losses": 6,
+        "win_rate": 45.5,
+        "net_r": 1.5
+      },
+      "smc_fvg": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 2.0
+      },
+      "price": 66.83
+    },
+    {
+      "symbol": "BCHUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 2,
+        "wins": 0,
+        "losses": 2,
+        "win_rate": 0.0,
+        "net_r": -2.0
+      },
+      "momentum": {
+        "trades": 11,
+        "wins": 7,
+        "losses": 4,
+        "win_rate": 63.6,
+        "net_r": 6.5
+      },
+      "smc_fvg": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 2.0
+      },
+      "price": 308.52
+    },
+    {
+      "symbol": "1000PEPEUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 3,
+        "wins": 1,
+        "losses": 2,
+        "win_rate": 33.3,
+        "net_r": 0.0
+      },
+      "momentum": {
+        "trades": 15,
+        "wins": 6,
+        "losses": 9,
+        "win_rate": 40.0,
+        "net_r": 0.0
+      },
+      "smc_fvg": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 2.0
+      },
+      "price": 0.0043153
+    },
+    {
+      "symbol": "UNIUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "win_rate": 0.0,
+        "net_r": 0.0
+      },
+      "momentum": {
+        "trades": 8,
+        "wins": 4,
+        "losses": 4,
+        "win_rate": 50.0,
+        "net_r": 2.0
+      },
+      "smc_fvg": {
+        "trades": 3,
+        "wins": 3,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 6.0
+      },
+      "price": 8.816
+    },
+    {
+      "symbol": "TAOUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 2,
+        "wins": 0,
+        "losses": 2,
+        "win_rate": 0.0,
+        "net_r": -2.0
+      },
+      "momentum": {
+        "trades": 13,
+        "wins": 5,
+        "losses": 8,
+        "win_rate": 38.5,
+        "net_r": -0.5
+      },
+      "smc_fvg": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 2.0
+      },
+      "price": 302.41
+    },
+    {
+      "symbol": "ARBUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "net_r": -1.0
+      },
+      "momentum": {
+        "trades": 9,
+        "wins": 4,
+        "losses": 5,
+        "win_rate": 44.4,
+        "net_r": 1.0
+      },
+      "smc_fvg": {
+        "trades": 2,
+        "wins": 2,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 4.0
+      },
+      "price": 0.20408
+    },
+    {
+      "symbol": "ENAUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "win_rate": 0.0,
+        "net_r": 0.0
+      },
+      "momentum": {
+        "trades": 15,
+        "wins": 7,
+        "losses": 8,
+        "win_rate": 46.7,
+        "net_r": 2.5
+      },
+      "smc_fvg": {
+        "trades": 2,
+        "wins": 2,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 4.0
+      },
+      "price": 0.25684
+    },
+    {
+      "symbol": "WLDUSDT",
+      "best_win_rate": 100.0,
+      "confluence": {
+        "trades": 2,
+        "wins": 2,
+        "losses": 0,
+        "win_rate": 100.0,
+        "net_r": 4.0
+      },
+      "momentum": {
+        "trades": 16,
+        "wins": 9,
+        "losses": 7,
+        "win_rate": 56.2,
+        "net_r": 6.5
+      },
+      "smc_fvg": {
+        "trades": 2,
+        "wins": 1,
+        "losses": 1,
+        "win_rate": 50.0,
+        "net_r": 1.0
+      },
+      "price": 0.5166
+    }
+  ]
+}

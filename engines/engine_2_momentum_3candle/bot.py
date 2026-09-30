@@ -48,8 +48,23 @@ class BinanceMomentumBot:
         print(f"Margin per Trade: {config.MARGIN_FRACTION * 100}%")
         print(f"Max Concurrent Trades: {config.MAX_CONCURRENT_TRADES}")
         print(f"Hold Duration: {config.HOLD_MINUTES} minutes (2 candles)")
-        print(f"Symbols ({len(config.SYMBOLS)}): {', '.join(config.SYMBOLS)}")
+        print(f"Symbols ({len(self.get_symbols())}): {', '.join(self.get_symbols())}")
         print("=" * 60)
+
+    def get_symbols(self):
+        shared_active = os.getenv("ACTIVE_PAIRS_FILE", "/app/shared/active_pairs.json")
+        if not os.path.exists(shared_active):
+            shared_active = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+        if os.path.exists(shared_active):
+            try:
+                with open(shared_active, "r") as f:
+                    pair_data = json.load(f)
+                    alloc = pair_data.get("engine_allocations", {}).get("engine_2_momentum_3candle")
+                    if alloc:
+                        return alloc
+            except Exception:
+                pass
+        return config.SYMBOLS
 
         # Check server time & balance
         srv_time = self.client.get_server_time()
@@ -117,7 +132,7 @@ class BinanceMomentumBot:
         real_positions = self.client.get_active_positions() if not config.DRY_RUN else []
         active_count = len(self.tracked_trades)
 
-        for symbol in config.SYMBOLS:
+        for symbol in self.get_symbols():
             # Fetch latest 15m klines
             klines = self.client.get_klines(symbol, interval=config.TIMEFRAME, limit=8)
             if len(klines) < 5:

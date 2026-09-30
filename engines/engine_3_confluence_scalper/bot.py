@@ -78,9 +78,24 @@ class ConfluenceTradingBot:
         if closed_symbols:
             save_active_trades(self.active_trades)
 
+    def get_symbols(self):
+        shared_active = os.getenv("ACTIVE_PAIRS_FILE", "/app/shared/active_pairs.json")
+        if not os.path.exists(shared_active):
+            shared_active = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+        if os.path.exists(shared_active):
+            try:
+                with open(shared_active, "r") as f:
+                    pair_data = json.load(f)
+                    alloc = pair_data.get("engine_allocations", {}).get("engine_3_confluence_scalper")
+                    if alloc:
+                        return alloc
+            except Exception:
+                pass
+        return SYMBOLS
+
     def scan_for_signals(self):
         equity = self.client.get_account_balance()
-        for symbol in SYMBOLS:
+        for symbol in self.get_symbols():
             if symbol in self.active_trades:
                 continue
 

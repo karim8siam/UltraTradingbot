@@ -105,7 +105,22 @@ def run_single_iteration(verbose: bool = True) -> Dict[str, Any]:
 
     signals_processed = []
 
-    for symbol in ALLOWED_SYMBOLS:
+    # Dynamic 24-hour screener pair loader (50%+ win-rate)
+    target_symbols = ALLOWED_SYMBOLS
+    shared_active = os.getenv("ACTIVE_PAIRS_FILE", "/app/shared/active_pairs.json")
+    if not os.path.exists(shared_active):
+        shared_active = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+    if os.path.exists(shared_active):
+        try:
+            with open(shared_active, "r") as f:
+                pair_data = json.load(f)
+                alloc = pair_data.get("engine_allocations", {}).get("engine_1_multiregime_ml")
+                if alloc:
+                    target_symbols = [s if "/" in s else f"{s[:-4]}/{s[-4:]}" for s in alloc]
+        except Exception:
+            pass
+
+    for symbol in target_symbols:
         try:
             df_tf = data_fetcher.fetch_ohlcv(symbol, timeframe=DEFAULT_TIMEFRAME, limit=300)
             df_htf = data_fetcher.fetch_ohlcv(symbol, timeframe=HIGHER_TIMEFRAME, limit=100)

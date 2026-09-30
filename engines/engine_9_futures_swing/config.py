@@ -7,6 +7,23 @@ from dataclasses import dataclass, field
 from typing import List
 
 
+def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[str]:
+    import json
+    shared_active = os.getenv("ACTIVE_PAIRS_FILE", "/app/shared/active_pairs.json")
+    if not os.path.exists(shared_active):
+        shared_active = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+    if os.path.exists(shared_active):
+        try:
+            with open(shared_active, "r") as f:
+                pair_data = json.load(f)
+                alloc = pair_data.get("engine_allocations", {}).get(engine_key)
+                if alloc:
+                    return alloc
+        except Exception:
+            pass
+    return default_symbols
+
+
 @dataclass
 class Config:
     # ---------------- Environment & Execution Gates ----------------
@@ -18,8 +35,8 @@ class Config:
     PAPER_TRADING: bool = os.getenv("PAPER_TRADING", "false").lower() == "true"
     DRY_RUN: bool = os.getenv("DRY_RUN", "true").lower() == "true"
 
-    # ---------------- Default Trading Pairs (Top 25) ----------------
-    SYMBOLS: List[str] = field(default_factory=lambda: [
+    # ---------------- Default Trading Pairs (Dynamically refreshed from 24h screener) ----------------
+    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols("engine_9_futures_swing", [
         "BTCUSDT",
         "ETHUSDT",
         "BNBUSDT",
@@ -45,7 +62,7 @@ class Config:
         "TIAUSDT",
         "RENDERUSDT",
         "UNIUSDT"
-    ])
+    ]))
 
     # ---------------- Timeframes ----------------
     TF_DAILY: str = "1d"

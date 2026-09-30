@@ -22,6 +22,22 @@ def get_env_int(key: str, default: int) -> int:
     except ValueError:
         return default
 
+def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[str]:
+    import json
+    shared_active = os.getenv("ACTIVE_PAIRS_FILE", "/app/shared/active_pairs.json")
+    if not os.path.exists(shared_active):
+        shared_active = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+    if os.path.exists(shared_active):
+        try:
+            with open(shared_active, "r") as f:
+                pair_data = json.load(f)
+                alloc = pair_data.get("engine_allocations", {}).get(engine_key)
+                if alloc:
+                    return alloc
+        except Exception:
+            pass
+    return default_symbols
+
 @dataclass
 class Config:
     # 1. Trading Environment
@@ -34,13 +50,13 @@ class Config:
     PAPER_TRADING: bool = field(default_factory=lambda: get_env_bool('PAPER_TRADING', False))
     EMERGENCY_STOP: bool = field(default_factory=lambda: get_env_bool('EMERGENCY_STOP', False))
 
-    # 2. Trading Pairs (Top 20 most liquid pairs)
-    SYMBOLS: List[str] = field(default_factory=lambda: [
+    # 2. Trading Pairs (Dynamically refreshed from 24h screener with 50%+ win-rate)
+    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols('engine_5_deterministic_smc', [
         'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT',
         'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'SUIUSDT',
         'NEARUSDT', 'PEPEUSDT', 'SHIBUSDT', 'APTUSDT', 'LTCUSDT',
         'TONUSDT', 'WIFUSDT', 'BCHUSDT', 'FETUSDT', 'TIAUSDT'
-    ])
+    ]))
 
     # 3. Strategy Parameters
     SWING_LENGTH: int = 2

@@ -32,6 +32,23 @@ def load_env_file(filepath: str = ".env") -> dict:
 load_env_file()
 
 
+def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[str]:
+    import json
+    shared_active = os.getenv("ACTIVE_PAIRS_FILE", "/app/shared/active_pairs.json")
+    if not os.path.exists(shared_active):
+        shared_active = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "active_pairs.json"))
+    if os.path.exists(shared_active):
+        try:
+            with open(shared_active, "r") as f:
+                pair_data = json.load(f)
+                alloc = pair_data.get("engine_allocations", {}).get(engine_key)
+                if alloc:
+                    return alloc
+        except Exception:
+            pass
+    return default_symbols
+
+
 @dataclass
 class BotConfig:
     # 1. Trading Environment & Modes
@@ -48,15 +65,15 @@ class BotConfig:
     LIVE_REST_URL: str = "https://fapi.binance.com"
     TESTNET_REST_URL: str = "https://testnet.binancefuture.com"
 
-    # 2. Trading Pairs (30 Top Binance USDT-M Futures Pairs)
-    SYMBOLS: List[str] = field(default_factory=lambda: [
+    # 2. Trading Pairs (Dynamically refreshed from 24h screener with 50%+ win-rate)
+    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols("engine_7_institutional_fvg", [
         "BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT",
         "DOGEUSDT", "ADAUSDT", "AVAXUSDT", "LINKUSDT", "SUIUSDT",
         "NEARUSDT", "APTUSDT", "LTCUSDT", "BCHUSDT", "DOTUSDT",
         "POLUSDT", "ETCUSDT", "XLMUSDT", "FILUSDT", "INJUSDT",
         "RENDERUSDT", "1000PEPEUSDT", "1000SHIBUSDT", "1000BONKUSDT", "1000FLOKIUSDT",
         "TIAUSDT", "SEIUSDT", "FETUSDT", "ARBUSDT", "OPUSDT"
-    ])
+    ]))
 
     # 3. Timeframes (Section 3)
     TF_BIAS_MAJOR: str = "4h"
