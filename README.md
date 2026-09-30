@@ -71,6 +71,16 @@ UltraTradingbot/
 * **Risk & Leverage:** Strictly **1.0% Risk per trade**, **5x Leverage** with notional clamping, 2% Max Daily Loss kill switch, 3-loss cooldown.
 * **Pairs:** **Top 20 Liquid Futures Pairs** (`BTCUSDT`, `ETHUSDT`, `SOLUSDT`, `BNBUSDT`, `XRPUSDT`, `DOGEUSDT`, `ADAUSDT`, `AVAXUSDT`, `LINKUSDT`, `SUIUSDT`, `NEARUSDT`, `PEPEUSDT`, `SHIBUSDT`, `APTUSDT`, `LTCUSDT`, `TONUSDT`, `WIFUSDT`, `BCHUSDT`, `FETUSDT`, `TIAUSDT`).
 
+### 6. Engine 6: Deterministic Fibonacci Pullback Trading Bot
+* **Timeframes:** 4H Macro Trend | 1H Intermediate Trend | 15M Impulse Move ($\ge 2.0 \times \text{ATR}$) | 5M Confirmation & Entry
+* **Strategy:** 100% Deterministic Fibonacci Retracement & Trend Pullback system
+  * 4H & 1H multi-timeframe swing alignment (`SWING_LENGTH=2`)
+  * 15M confirmed impulse move ($\ge 2.0 \times \text{ATR}_{14}$)
+  * 5M Golden Pocket Retracement (38.2%–61.8% zone, 78.6% invalidation guard)
+  * 5M structure shift with high-momentum displacement candle ($\text{Body} \ge 1.5 \times \text{AvgBody}_{10}$ and $\text{Body\%} \ge 60\%$)
+  * 16-Factor Setup Scorer ($\ge 11/16$ threshold)
+* **Risk & Leverage:** Strictly **1.0% Risk per trade**, **5X Isolated Leverage**, uncapped daily loss, structural SL + ATR buffer, dynamic TP with $\text{RR} \ge 2.0$.
+* **Pairs:** **Top 30 Liquid Binance USDT-M Futures Pairs** (`BTCUSDT`, `ETHUSDT`, `SOLUSDT`, `BNBUSDT`, `XRPUSDT`, `DOGEUSDT`, `ADAUSDT`, `SUIUSDT`, `AVAXUSDT`, `LINKUSDT`, `TRXUSDT`, `NEARUSDT`, `PEPEUSDT`, `ENAUSDT`, `SHIBUSDT`, `LTCUSDT`, `BCHUSDT`, `DOTUSDT`, `UNIUSDT`, `APTUSDT`, `WLDUSDT`, `TAOUSDT`, `FETUSDT`, `RENDERUSDT`, `OPUSDT`, `ARBUSDT`, `FILUSDT`, `INJUSDT`, `AAVEUSDT`, `CRVUSDT`).
 
 ---
 
@@ -91,7 +101,7 @@ docker compose up -d
 
 # 4. View logs for a specific engine
 docker compose logs -f engine_1_multiregime_ml
-docker compose logs -f engine_2_momentum_3candle
+docker compose logs -f engine_6_fibonacci_pullback
 
 # 5. Stop all engines
 docker compose down
@@ -100,15 +110,17 @@ docker compose down
 ### Option B: Run an Individual Engine Locally
 
 ```bash
-# Run Engine 1
-cd engines/engine_1_multiregime_ml
-pip install -r requirements.txt
-python bot.py
+# Run Engine 6 (Deterministic Fibonacci Pullback)
+cd engines/engine_6_fibonacci_pullback
+python3 main.py --mode dry-run --once
 
-# Run Engine 2
-cd engines/engine_2_momentum_3candle
-pip install -r requirements.txt
-python bot.py
+# Run Engine 5 (Deterministic SMC)
+cd engines/engine_5_deterministic_smc
+python3 main.py --mode dry-run
+
+# Run Engine 1 (Multi-Regime ML)
+cd engines/engine_1_multiregime_ml
+python3 bot.py
 ```
 
 ---

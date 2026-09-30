@@ -60,3 +60,15 @@ services:
       - ./engines/engine_5_deterministic_smc/smc_trading.db:/app/smc_trading.db
       - ./engines/engine_5_deterministic_smc/bot.log:/app/bot.log
 
+  engine_6_fibonacci_pullback:
+    build:
+      context: ./engines/engine_6_fibonacci_pullback
+      dockerfile: Dockerfile
+    container_name: engine_6_fibonacci_pullback
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./engines/engine_6_fibonacci_pullback/data:/app/data
+      - ./engines/engine_6_fibonacci_pullback/trading_bot.log:/app/trading_bot.log
+
