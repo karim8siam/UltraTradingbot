@@ -108,6 +108,18 @@ services:
       - ./engines/engine_9_futures_swing/data:/app/data
       - ./engines/engine_9_futures_swing/bot.log:/app/bot.log
 
+  engine_10_confluence_100pairs:
+    build:
+      context: ./engines/engine_10_confluence_100pairs
+      dockerfile: Dockerfile
+    container_name: engine_10_confluence_100pairs
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./engines/engine_10_confluence_100pairs/bot.log:/app/bot.log
+
+
 
 
 

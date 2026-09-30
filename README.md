@@ -117,6 +117,16 @@ UltraTradingbot/
 * **Risk & Leverage:** Strictly **1.0% Risk per trade**, **3x Isolated Leverage** (conservative swing sizing), **>= 1:2.5 Risk/Reward Ratio**
 * **Pairs:** Top 25 High-Liquidity Binance USDT-M Futures Pairs (`BTCUSDT`, `ETHUSDT`, `BNBUSDT`, `SOLUSDT`, `XRPUSDT`, `ADAUSDT`, `DOGEUSDT`, `AVAXUSDT`, `LINKUSDT`, `DOTUSDT`, `NEARUSDT`, `SUIUSDT`, `APTUSDT`, `OPUSDT`, `ARBUSDT`, `ATOMUSDT`, `LTCUSDT`, `BCHUSDT`, `ETCUSDT`, `FILUSDT`, `ICPUSDT`, `INJUSDT`, `TIAUSDT`, `RENDERUSDT`, `UNIUSDT`).
 
+### 10. Engine 10: 100-Pair 10/10 Confluence Futures Engine
+* **Timeframes:** 5M Primary Execution | 15M Intermediate Structure | 1H Macro Trend Sentinel
+* **Strategy:** High-Throughput 100-Pair 10/10 Confluence Scanner
+  * Multi-Timeframe Trend Alignment & Momentum Checklist
+  * Strict 10.0 / 10.0 Points (100% Confluence) Entry Trigger
+  * 15-second high-speed cycle scanning across 100 Binance Futures pairs
+* **Risk & Leverage:** Strictly **1.0% Risk per trade**, **5x Isolated Leverage**, **1:2 Risk/Reward Ratio** (`SL = 0.60x ATR`, `TP = 1.20x ATR`)
+* **Pairs:** **Top 100 High-Liquidity Binance USDT-M Futures Pairs**.
+
+
 
 
 ---
