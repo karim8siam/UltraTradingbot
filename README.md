@@ -82,6 +82,19 @@ UltraTradingbot/
 * **Risk & Leverage:** Strictly **1.0% Risk per trade**, **5X Isolated Leverage**, uncapped daily loss, structural SL + ATR buffer, dynamic TP with $\text{RR} \ge 2.0$.
 * **Pairs:** **Top 30 Liquid Binance USDT-M Futures Pairs** (`BTCUSDT`, `ETHUSDT`, `SOLUSDT`, `BNBUSDT`, `XRPUSDT`, `DOGEUSDT`, `ADAUSDT`, `SUIUSDT`, `AVAXUSDT`, `LINKUSDT`, `TRXUSDT`, `NEARUSDT`, `PEPEUSDT`, `ENAUSDT`, `SHIBUSDT`, `LTCUSDT`, `BCHUSDT`, `DOTUSDT`, `UNIUSDT`, `APTUSDT`, `WLDUSDT`, `TAOUSDT`, `FETUSDT`, `RENDERUSDT`, `OPUSDT`, `ARBUSDT`, `FILUSDT`, `INJUSDT`, `AAVEUSDT`, `CRVUSDT`).
 
+### 7. Engine 7: Institutional Fair Value Gap (FVG) Trading Engine
+* **Timeframes:** 4H Macro Bias | 1H Intermediate Trend | 15M FVG Displacement | 5M Pullback & Market Structure Shift (MSS)
+* **Strategy:** Institutional Smart Money Concept (SMC) Fair Value Gap system
+  * 4H & 1H multi-timeframe swing bias alignment (`SWING_LENGTH=2`)
+  * 15M Fair Value Gap identification with high-velocity displacement body ($> 1.5\times\text{ATR}$, $> 60\%$ candle body)
+  * 5M pullback to FVG midpoint (discount zone for Longs, premium zone for Shorts)
+  * 5M structure shift confirmation before execution
+* **Risk & Leverage:** Strictly **2.0% Maximum Risk per trade**, **5x Fixed Leverage**, exact **1:2 Risk/Reward Ratio** (Loss \$1 $\rightarrow$ Win \$2)
+* **Session Exit:** Global **+2.0% Total Account PnL Exit** (closes open positions when total unrealized profit $\ge 2\%$)
+* **Execution & Protection:** Immediate market entry upon confirmation, predefined server-side cloud SL/TP orders on Binance (`closePosition=True`)
+* **Pairs:** **Top 30 Liquid Binance USDT-M Futures Pairs** (`BTCUSDT`, `ETHUSDT`, `BNBUSDT`, `SOLUSDT`, `XRPUSDT`, `DOGEUSDT`, `ADAUSDT`, `AVAXUSDT`, `LINKUSDT`, `SUIUSDT`, `NEARUSDT`, `APTUSDT`, `LTCUSDT`, `BCHUSDT`, `DOTUSDT`, `POLUSDT`, `ETCUSDT`, `XLMUSDT`, `FILUSDT`, `INJUSDT`, `RENDERUSDT`, `1000PEPEUSDT`, `1000SHIBUSDT`, `1000BONKUSDT`, `1000FLOKIUSDT`, `TIAUSDT`, `SEIUSDT`, `FETUSDT`, `ARBUSDT`, `OPUSDT`).
+
+
 ---
 
 ## 🚀 Quick Start (Local / VPS)

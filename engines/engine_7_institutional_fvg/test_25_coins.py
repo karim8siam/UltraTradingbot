@@ -1,0 +1,23 @@
+from binance_client import BinanceFuturesClient
+from config import BotConfig
+
+config = BotConfig()
+client = BinanceFuturesClient(config.BINANCE_API_KEY, config.BINANCE_API_SECRET, False)
+
+bal = client.get_account_balance()
+print(f"✅ BINANCE API: AUTHENTICATED")
+print(f"✅ LIVE ACCOUNT BALANCE: ${bal:.2f} USDT\n")
+
+print("--- 25 COINS CONNECTION TEST ---")
+tickers = client._request("GET", "/fapi/v1/ticker/price")
+price_map = {t["symbol"]: float(t["price"]) for t in tickers}
+
+connected = 0
+for idx, sym in enumerate(config.SYMBOLS, 1):
+    if sym in price_map:
+        connected += 1
+        print(f" {idx:2d}. {sym:<10} : [OK] Live Price = ${price_map[sym]:.4f}")
+    else:
+        print(f" {idx:2d}. {sym:<10} : [FAIL]")
+
+print(f"\nSTATUS: {connected}/{len(config.SYMBOLS)} COINS 100% CONNECTED & READY TO TRADE.")

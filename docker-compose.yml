@@ -72,3 +72,16 @@ services:
       - ./engines/engine_6_fibonacci_pullback/data:/app/data
       - ./engines/engine_6_fibonacci_pullback/trading_bot.log:/app/trading_bot.log
 
+  engine_7_institutional_fvg:
+    build:
+      context: ./engines/engine_7_institutional_fvg
+      dockerfile: Dockerfile
+    container_name: engine_7_institutional_fvg
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./engines/engine_7_institutional_fvg/data:/app/data
+      - ./engines/engine_7_institutional_fvg/bot_live.log:/app/bot_live.log
+
+

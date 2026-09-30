@@ -1,0 +1,36 @@
+# Environments & Secrets (CRITICAL: Never commit real API keys)
+.env
+.env.local
+.env.*.local
+
+# Databases & Runtime State
+*.db
+*.sqlite3
+trades.db
+
+# Logs
+*.log
+bot_live.log
+daemon_stdout.log
+daemon_stderr.log
+
+# Python cache & virtual environment
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Downloaded data cache
+data/
