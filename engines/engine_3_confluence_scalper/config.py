@@ -38,11 +38,10 @@ MAX_RISK_PER_TRADE = float(os.getenv("MAX_RISK_PER_TRADE", "0.01"))  # 1.0% of a
 MAX_CONCURRENT_TRADES = int(os.getenv("MAX_CONCURRENT_TRADES", "4"))
 FEE_RATE = float(os.getenv("FEE_RATE", "0.0005"))  # 0.05% taker fee per side
 
-# ATR Stop-Loss and Take-Profit Settings
-# 0.55x ATR is discarded. Using 1.55x ATR (or custom asymmetric)
+# ATR Stop-Loss and Take-Profit Settings (1:2 Risk to Reward)
 ATR_PERIOD = 14
 ATR_SL_MULT = float(os.getenv("ATR_SL_MULT", "1.55"))  # SL = Entry - (1.55 * ATR)
-ATR_TP_MULT = float(os.getenv("ATR_TP_MULT", "1.55"))  # TP = Entry + (1.55 * ATR)
+ATR_TP_MULT = float(os.getenv("ATR_TP_MULT", "3.10"))  # TP = Entry + (3.10 * ATR) -> 1:2 R:R
 
 # Top 30 High-Liquidity Crypto USDT Pairs (Stablecoins & Pegged Tokens Excluded)
 SYMBOLS = [
