@@ -166,3 +166,31 @@ python3 bot.py
 * **Dry-Run Default:** Set `DRY_RUN=true` to test signals and execution without real money.
 * **Server-Side Protection:** Stop Loss & Take Profit are mapped natively to Binance matching engines.
 * **Decoupled Failure Domains:** Each engine runs in its own process/container with independent memory and state.
+
+## Configuration
+
+| Parameter | Default | Description |
+|---|---|---|
+| `DEFAULT_TIMEFRAME` | `5m` | Execution candle timeframe |
+| `HIGHER_TIMEFRAME` | `15m` | Institutional structure timeframe |
+| `BTC_SENTINEL_TIMEFRAME` | `1h` | Bitcoin macro trend timeframe |
+| `RISK_PER_TRADE_PERCENT` | `0.1` | Max amount (margin) per trade (% of balance) |
+| `MARGIN_FRACTION` | `0.001` | 0.1% maximum balance allocation per trade |
+| `DEFAULT_LEVERAGE` | `5` | Isolated leverage multiplier |
+| `MAX_OPEN_TRADES` | `30` | Maximum simultaneous positions |
+| `PAUSE_NEW_TRADES` | `false` | Emergency pause toggle |
+
+## Risk Management
+
+- **0.1% Maximum Amount (Margin)** per trade with **5x Leverage** (e.g. $1,000 USDT balance uses 0.1% = $1.00 margin, yielding $5.00 notional)
+- **1:2 Risk/Reward** — Take Profit = 2× Stop Loss distance (1.5x / 3.0x ATR)
+- **Server-Side Protection** — SL and TP live on Binance's matching engine 24/7
+- **Anti-Whipsaw Cooldown** — 5-minute lockout after stop-out per symbol
+- **Losing Streak Halving** — 2 consecutive losses auto-cuts risk to 0.05%
+- **10% Drawdown** — Protection mode (risk capped to 0.05%)
+- **20% Drawdown** — Emergency halt (complete bot suspension)
+- **3% Daily Loss** — Kill switch stops all new entries
+
+## License
+
+Private — All rights reserved.

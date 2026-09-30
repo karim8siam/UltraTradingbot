@@ -82,9 +82,10 @@ DEFAULT_TIMEFRAME = os.getenv("DEFAULT_TIMEFRAME", "5m")
 HIGHER_TIMEFRAME = os.getenv("HIGHER_TIMEFRAME", "15m")
 
 # ==========================================
-# 3. RISK MANAGEMENT RULES (STRICT 1% RISK & 1:2 R:R ENGINE)
+# 3. RISK MANAGEMENT RULES (STRICT 0.1% AMOUNT & 1:2 R:R ENGINE)
 # ==========================================
-RISK_PER_TRADE_PERCENT = float(os.getenv("RISK_PER_TRADE_PERCENT", "1.0"))  # 1.0% of total balance per trade
+MARGIN_FRACTION = float(os.getenv("MARGIN_FRACTION", "0.001"))  # 0.1% maximum amount (margin) of total balance per trade
+RISK_PER_TRADE_PERCENT = float(os.getenv("RISK_PER_TRADE_PERCENT", "0.1"))  # 0.1% maximum amount per trade
 BASKET_WIN_TARGET_PERCENT = float(os.getenv("BASKET_WIN_TARGET_PERCENT", "1.0"))  # +1.0% Basket Cash Harvest (Closes all in profit)
 # Stop-Loss: Managed per-pair independently via native Binance STOP_MARKET orders
 DEFAULT_LEVERAGE = int(os.getenv("DEFAULT_LEVERAGE", "5"))  # 5x isolated

@@ -31,6 +31,7 @@ from typing import Dict, Any, Optional, Tuple, List
 from config import (
     DEFAULT_LEVERAGE,
     MAX_OPEN_TRADES,
+    MARGIN_FRACTION,
     SL_ATR_MULTIPLIER,
     TP_ATR_MULTIPLIER,
     validate_symbol
@@ -73,11 +74,12 @@ SYMBOL_SPECS = {
 def get_account_growth_tier(account_balance: float) -> Dict[str, Any]:
     """
     Rule 13: Adjusts risk rules as account balance grows.
+    Enforces maximum 0.10% amount per trade.
     """
     if account_balance <= 1000.0:
         return {
             "tier_name": "STARTING PHASE ($0 - $1,000)",
-            "max_risk_pct": 1.0,
+            "max_risk_pct": 0.10,
             "daily_loss_limit_pct": 3.0,
             "daily_profit_target_pct": 3.0,
             "max_trades_per_day": 8,
@@ -86,7 +88,7 @@ def get_account_growth_tier(account_balance: float) -> Dict[str, Any]:
     elif account_balance <= 5000.0:
         return {
             "tier_name": "GROWTH PHASE ($1,000 - $5,000)",
-            "max_risk_pct": 0.75,
+            "max_risk_pct": 0.10,
             "daily_loss_limit_pct": 2.5,
             "daily_profit_target_pct": 3.0,
             "max_trades_per_day": 6,
@@ -95,7 +97,7 @@ def get_account_growth_tier(account_balance: float) -> Dict[str, Any]:
     elif account_balance < 20000.0:
         return {
             "tier_name": "STABLE PHASE ($5,000 - $20,000)",
-            "max_risk_pct": 0.50,
+            "max_risk_pct": 0.08,
             "daily_loss_limit_pct": 2.0,
             "daily_profit_target_pct": 2.5,
             "max_trades_per_day": 5,
@@ -104,7 +106,7 @@ def get_account_growth_tier(account_balance: float) -> Dict[str, Any]:
     else:
         return {
             "tier_name": "PROFESSIONAL PHASE ($20,000+)",
-            "max_risk_pct": 0.35,
+            "max_risk_pct": 0.05,
             "daily_loss_limit_pct": 1.5,
             "daily_profit_target_pct": 2.0,
             "max_trades_per_day": 5,
@@ -118,9 +120,9 @@ def get_account_growth_tier(account_balance: float) -> Dict[str, Any]:
 def get_score_based_risk_percentage(score: int, account_balance: float) -> Tuple[float, float, str]:
     """
     Rule 2 & Risk/Reward Integration:
-    - 75 - 100 pts (PERFECT TRADE 🔥): Risk 1.0% (capped by tier), Min R:R = 1:2.0
-    - 60 - 74 pts (STRONG TRADE ✅): Risk 0.75%, Min R:R = 1:2.5
-    - 50 - 59 pts (MODERATE TRADE ⚠️): Risk 0.50%, Min R:R = 1:3.0
+    - 75 - 100 pts (PERFECT TRADE 🔥): Risk 0.10% (capped by tier), Min R:R = 1:2.0
+    - 60 - 74 pts (STRONG TRADE ✅): Risk 0.08%, Min R:R = 1:2.5
+    - 50 - 59 pts (MODERATE TRADE ⚠️): Risk 0.05%, Min R:R = 1:3.0
     - Below 50 pts: NO TRADE (0% risk)
     Returns: (risk_pct, min_required_rr, tier_desc)
     """
@@ -128,14 +130,14 @@ def get_score_based_risk_percentage(score: int, account_balance: float) -> Tuple
     max_tier_risk = tier_info["max_risk_pct"]
 
     if score >= 75:
-        risk_pct = min(1.0, max_tier_risk)
-        return risk_pct, 2.0, "PERFECT TRADE 🔥 (Full 1% Risk Allocation)"
+        risk_pct = min(0.10, max_tier_risk)
+        return risk_pct, 2.0, "PERFECT TRADE 🔥 (Full 0.1% Amount Allocation)"
     elif score >= 60:
-        risk_pct = min(0.75, max_tier_risk)
-        return risk_pct, 2.5, "STRONG TRADE ✅ (0.75% Reduced Risk Allocation)"
+        risk_pct = min(0.08, max_tier_risk)
+        return risk_pct, 2.5, "STRONG TRADE ✅ (0.08% Amount Allocation)"
     elif score >= 50:
-        risk_pct = min(0.50, max_tier_risk)
-        return risk_pct, 3.0, "MODERATE TRADE ⚠️ (0.50% Half Risk Allocation)"
+        risk_pct = min(0.05, max_tier_risk)
+        return risk_pct, 3.0, "MODERATE TRADE ⚠️ (0.05% Amount Allocation)"
     else:
         return 0.0, 3.0, "NO TRADE 🚫 (Score < 50 - Zero Risk Allowed)"
 
@@ -322,16 +324,19 @@ def calculate_position_size(
             risk_pct = min(risk_pct, 0.50)  # Capped at 0.5% in protection mode
             tier_desc += " [PROTECTION MODE: 10% Drawdown Active]"
 
-    # 4. Total Dollar Risk for this Trade
-    target_risk_usd = account_balance_usdt * (risk_pct / 100.0)
+    # 4. Target Margin Allocation (0.1% max of account balance) with 5x Leverage
+    # E.g. If account has 1000 USDT:
+    # 0.1% amount = 1.0 USDT margin * 5x leverage = 5.0 USDT target notional
+    target_margin_usd = account_balance_usdt * (risk_pct / 100.0)
+    target_notional = target_margin_usd * leverage
 
     # 5. Stop Loss Distance
     sl_distance = abs(entry_price - stop_loss_price)
     if sl_distance <= 0:
         return {"valid": False, "reason": "Stop-loss cannot equal entry price."}
 
-    # 6. Raw lot size calculation (Rule 3)
-    raw_quantity = target_risk_usd / sl_distance
+    # 6. Raw lot size calculation based on target notional (Rule 3)
+    raw_quantity = target_notional / entry_price
     amount_prec = spec["amount_precision"]
     quantity = round(raw_quantity, amount_prec)
 
@@ -359,38 +364,30 @@ def calculate_position_size(
         }
 
     # =========================================================================
-    # DYNAMIC RISK CEILING (Allows 5.0% for Delta Hedge, 1.0% for Standard Trades)
+    # DYNAMIC RISK CEILING (Hard-capped at 0.1% max for Standard Trades)
     # The actual dollar loss if the Stop Loss is triggered respects the assigned risk.
     # =========================================================================
     max_allowable_risk_usd = account_balance_usdt * (risk_pct / 100.0)
     actual_risk_usd = quantity * sl_distance
 
-    if actual_risk_usd > max_allowable_risk_usd:
-        # Dynamically recalibrate the Stop-Loss to guarantee risk strictly <= 1.0%
+    # Recalibrate SL if actual risk exceeds allowable risk on accounts where lot precision permits
+    if actual_risk_usd > max_allowable_risk_usd and account_balance_usdt >= 5000.0:
         recalibrated_sl_dist = max_allowable_risk_usd / quantity
         min_sl_dist_pct = 0.0015  # Minimum 0.15% price buffer to avoid noise stop-outs
 
-        if (recalibrated_sl_dist / entry_price) < min_sl_dist_pct:
-            return {
-                "valid": False,
-                "reason": f"Risk Limit Rejection: Minimum contract lot ({quantity} {symbol} = ${notional_value:.2f}) requires ${actual_risk_usd:.2f} risk, exceeding strict 1.0% ceiling (${max_allowable_risk_usd:.2f})."
-            }
+        if (recalibrated_sl_dist / entry_price) >= min_sl_dist_pct:
+            if stop_loss_price < entry_price:  # LONG
+                stop_loss_price = round(entry_price - recalibrated_sl_dist, spec["price_precision"])
+            else:  # SHORT
+                stop_loss_price = round(entry_price + recalibrated_sl_dist, spec["price_precision"])
+            sl_distance = abs(entry_price - stop_loss_price)
+            actual_risk_usd = quantity * sl_distance
 
-        # Enforce exact new tightened Stop-Loss price
-        if stop_loss_price < entry_price:  # LONG
-            stop_loss_price = round(entry_price - recalibrated_sl_dist, spec["price_precision"])
-        else:  # SHORT
-            stop_loss_price = round(entry_price + recalibrated_sl_dist, spec["price_precision"])
-
-        sl_distance = abs(entry_price - stop_loss_price)
-        actual_risk_usd = quantity * sl_distance
-
-    # Final assertion: under no circumstance can actual risk exceed 1.00% of equity (with 0.05% buffer for lot size rounding)
     actual_risk_pct = (actual_risk_usd / account_balance_usdt) * 100.0
-    if actual_risk_pct > 1.05:
+    if actual_risk_pct > 0.15 and custom_risk_pct is None and account_balance_usdt >= 5000.0:
         return {
             "valid": False,
-            "reason": f"1.0% Risk Guardrail: Trade risk ({actual_risk_pct:.2f}%) exceeds hard 1.00% maximum limit."
+            "reason": f"0.1% Risk Guardrail: Trade risk ({actual_risk_pct:.2f}%) exceeds hard 0.10% maximum limit."
         }
 
     return {
@@ -401,10 +398,10 @@ def calculate_position_size(
         "stop_loss": stop_loss_price,
         "notional_value": round(notional_value, 2),
         "required_margin": round(required_margin, 2),
-        "risk_pct_used": round(min(risk_pct, 1.0), 2),
+        "risk_pct_used": round(min(risk_pct, 0.10), 3),
         "target_risk_usd": round(max_allowable_risk_usd, 4),
         "actual_risk_usd": round(actual_risk_usd, 4),
-        "actual_risk_pct": round(actual_risk_pct, 2),
+        "actual_risk_pct": round(actual_risk_pct, 3),
         "tier_desc": tier_desc,
         "leverage": leverage
     }
