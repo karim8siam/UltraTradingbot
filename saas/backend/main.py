@@ -125,16 +125,18 @@ def register(req: RegisterRequest):
 
     now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     with get_db() as conn:
-        existing = conn.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()
-        if existing:
-            raise HTTPException(status_code=400, detail="Email is already registered")
+        with conn.cursor() as cur:
+            cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+            if cur.fetchone():
+                raise HTTPException(status_code=400, detail="Email is already registered")
 
-        pwd_hash = hash_password(req.password)
-        cursor = conn.execute("""
-        INSERT INTO users (email, password_hash, full_name, created_at)
-        VALUES (?, ?, ?, ?)
-        """, (email, pwd_hash, req.full_name, now_str))
-        user_id = cursor.lastrowid
+            pwd_hash = hash_password(req.password)
+            cur.execute("""
+            INSERT INTO users (email, password_hash, full_name, created_at)
+            VALUES (%s, %s, %s, %s)
+            RETURNING id
+            """, (email, pwd_hash, req.full_name, now_str))
+            user_id = cur.fetchone()["id"]
         conn.commit()
 
     # Automatically grant 7-Day Free Trial on signup
@@ -154,11 +156,12 @@ def register(req: RegisterRequest):
 def login(req: LoginRequest):
     email = req.email.strip().lower()
     with get_db() as conn:
-        user = conn.execute("SELECT id, email, password_hash, full_name FROM users WHERE email = ?", (email,)).fetchone()
-        if not user or not verify_password(user["password_hash"], req.password):
-            raise HTTPException(status_code=400, detail="Invalid email or password")
-
-        user_id = user["id"]
+        with conn.cursor() as cur:
+            cur.execute("SELECT id, email, password_hash, full_name FROM users WHERE email = %s", (email,))
+            user = cur.fetchone()
+            if not user or not verify_password(user["password_hash"], req.password):
+                raise HTTPException(status_code=400, detail="Invalid email or password")
+            user_id = user["id"]
 
     sub_status = SubscriptionManager.get_subscription_status(user_id)
     token = create_access_token({"user_id": user_id, "email": email})
@@ -175,13 +178,18 @@ def login(req: LoginRequest):
 def get_profile(user: Dict[str, Any] = Depends(get_current_user)):
     user_id = user["user_id"]
     with get_db() as conn:
-        u = conn.execute("SELECT id, email, full_name FROM users WHERE id = ?", (user_id,)).fetchone()
-        key_row = conn.execute("SELECT exchange, api_key, is_valid, futures_enabled, balance_usdt, status FROM exchange_keys WHERE user_id = ?", (user_id,)).fetchone()
+        with conn.cursor() as cur:
+            cur.execute("SELECT id, email, full_name FROM users WHERE id = %s", (user_id,))
+            u = cur.fetchone()
+            cur.execute(
+                "SELECT exchange, api_key, is_valid, futures_enabled, balance_usdt, status FROM exchange_keys WHERE user_id = %s",
+                (user_id,)
+            )
+            key_row = cur.fetchone()
 
     sub = SubscriptionManager.get_subscription_status(user_id)
     key_info = None
     if key_row:
-        # Mask API key for security
         raw_key = key_row["api_key"]
         masked_key = f"{raw_key[:4]}...{raw_key[-4:]}" if len(raw_key) > 8 else "***"
         key_info = {
@@ -226,16 +234,17 @@ def connect_exchange(req: ConnectExchangeRequest, user: Dict[str, Any] = Depends
             "details": check_result
         }
 
-    # 2. Store with military-grade AES-256-GCM encryption
+    # 2. Store with AES-256-GCM encryption
     enc_secret = encrypt_secret(api_secret)
     now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     with get_db() as conn:
-        conn.execute("DELETE FROM exchange_keys WHERE user_id = ?", (user_id,))
-        conn.execute("""
-        INSERT INTO exchange_keys (user_id, exchange, api_key, api_secret_encrypted, is_valid, futures_enabled, withdrawals_disabled, balance_usdt, status, verified_at)
-        VALUES (?, ?, ?, ?, 1, 1, 1, ?, 'connected', ?)
-        """, (user_id, exchange, api_key, enc_secret, check_result["balance_usdt"], now_str))
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM exchange_keys WHERE user_id = %s", (user_id,))
+            cur.execute("""
+            INSERT INTO exchange_keys (user_id, exchange, api_key, api_secret_encrypted, is_valid, futures_enabled, withdrawals_disabled, balance_usdt, status, verified_at)
+            VALUES (%s, %s, %s, %s, 1, 1, 1, %s, 'connected', %s)
+            """, (user_id, exchange, api_key, enc_secret, check_result["balance_usdt"], now_str))
         conn.commit()
 
     return {
@@ -252,7 +261,8 @@ def connect_exchange(req: ConnectExchangeRequest, user: Dict[str, Any] = Depends
 def disconnect_exchange(user: Dict[str, Any] = Depends(get_current_user)):
     user_id = user["user_id"]
     with get_db() as conn:
-        conn.execute("UPDATE exchange_keys SET status = 'disconnected' WHERE user_id = ?", (user_id,))
+        with conn.cursor() as cur:
+            cur.execute("UPDATE exchange_keys SET status = 'disconnected' WHERE user_id = %s", (user_id,))
         conn.commit()
     return {"success": True, "message": "Exchange disconnected. Bot trading suspended."}
 
@@ -289,17 +299,19 @@ def verify_payment_tx(req: VerifyTxRequest, user: Dict[str, Any] = Depends(get_c
 
     # 1. Anti-Replay: Check database to ensure tx_hash has never been used
     with get_db() as conn:
-        existing = conn.execute(
-            "SELECT id, user_id, created_at FROM payment_transactions WHERE LOWER(tx_hash) = ?",
-            (clean_hash,)
-        ).fetchone()
-        if existing:
-            raise HTTPException(
-                status_code=400,
-                detail="This transaction hash has already been redeemed / used. Each transaction can only be redeemed once."
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT id, user_id, created_at FROM payment_transactions WHERE LOWER(tx_hash) = %s",
+                (clean_hash,)
             )
+            existing = cur.fetchone()
+            if existing:
+                raise HTTPException(
+                    status_code=400,
+                    detail="This transaction hash has already been redeemed. Each transaction can only be used once."
+                )
 
-    # 2. Query BNB Smart Chain dataseeds to verify transaction on-chain
+    # 2. Query BNB Smart Chain to verify on-chain
     check_res = BEP20Verifier.verify_transaction(clean_hash, expected_tier=req.tier)
     if not check_res["success"]:
         raise HTTPException(status_code=400, detail=check_res["error"])
@@ -348,15 +360,15 @@ def upgrade_subscription(req: UpgradeRequest, user: Dict[str, Any] = Depends(get
 def get_user_trades(user: Dict[str, Any] = Depends(get_current_user)):
     user_id = user["user_id"]
     with get_db() as conn:
-        rows = conn.execute("""
-        SELECT engine_name, symbol, side, entry_price, exit_price, pnl_usd, status, timestamp
-        FROM trades
-        WHERE user_id = ?
-        ORDER BY id DESC LIMIT 50
-        """, (user_id,)).fetchall()
-
-        trades = [dict(r) for r in rows]
-        total_pnl = sum(r["pnl_usd"] for r in trades)
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT engine_name, symbol, side, entry_price, exit_price, pnl_usd, status, timestamp
+            FROM trades
+            WHERE user_id = %s
+            ORDER BY id DESC LIMIT 50
+            """, (user_id,))
+            trades = [dict(r) for r in cur.fetchall()]
+            total_pnl = sum(r["pnl_usd"] for r in trades)
 
     return {
         "total_trades": len(trades),
