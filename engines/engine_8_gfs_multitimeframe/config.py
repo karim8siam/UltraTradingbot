@@ -4,6 +4,7 @@ Mathematical & Deterministic Multi-Timeframe System (1D -> 4H -> 15M)
 """
 
 import os
+import sys
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
@@ -18,39 +19,17 @@ if os.path.exists(_env_path):
                 val = _v.strip().strip('"').strip("'")
                 os.environ[_k.strip()] = val
 
-# Default Symbols (Verified dynamically through exchangeInfo - Top 30 Pairs)
-DEFAULT_SYMBOLS: List[str] = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "SOLUSDT",
-    "BNBUSDT",
-    "XRPUSDT",
-    "DOGEUSDT",
-    "ADAUSDT",
-    "AVAXUSDT",
-    "LINKUSDT",
-    "SUIUSDT",
-    "NEARUSDT",
-    "APTUSDT",
-    "1000PEPEUSDT",
-    "WIFUSDT",
-    "1000SHIBUSDT",
-    "ARBUSDT",
-    "OPUSDT",
-    "INJUSDT",
-    "FETUSDT",
-    "SEIUSDT",
-    "TIAUSDT",
-    "RENDERUSDT",
-    "AAVEUSDT",
-    "DOTUSDT",
-    "ATOMUSDT",
-    "UNIUSDT",
-    "LTCUSDT",
-    "ENAUSDT",
-    "FILUSDT",
-    "WLDUSDT",
-]
+# Import fixed 30-coin whitelist
+try:
+    from shared.whitelist import FIXED_30_COINS, filter_allowed_symbols, is_symbol_allowed
+except ImportError:
+    _shared_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    if _shared_dir not in sys.path:
+        sys.path.insert(0, _shared_dir)
+    from shared.whitelist import FIXED_30_COINS, filter_allowed_symbols, is_symbol_allowed
+
+# Default Symbols (STRICT FIXED 30-COIN WHITELIST - 1st: BTCUSDT)
+DEFAULT_SYMBOLS: List[str] = list(FIXED_30_COINS)
 
 # Timeframes
 TIMEFRAME_GRANDFATHER = "1d"
@@ -137,10 +116,10 @@ def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[st
                 pair_data = json.load(f)
                 alloc = pair_data.get("engine_allocations", {}).get(engine_key)
                 if alloc:
-                    return alloc
+                    return filter_allowed_symbols(alloc)
         except Exception:
             pass
-    return default_symbols
+    return filter_allowed_symbols(default_symbols)
 
 @dataclass
 class BotConfig:

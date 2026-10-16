@@ -28,34 +28,13 @@ LEVERAGE = 5       # 5x ISOLATED Leverage (20% Safe Buffer)
 MARGIN_FRACTION = 0.001  # Exact 0.1% risk of total capital per trade
 MAX_CONCURRENT_TRADES = 3
 
-# Top 25 Verified High Win-Rate Pairs (>= 55% Historical Win Rate)
-SYMBOLS = [
-    "LTCUSDT",
-    "ZKPUSDT",
-    "ETHUSDT",
-    "WIFUSDT",
-    "UNIUSDT",
-    "ZENUSDT",
-    "NVDAUSDT",
-    "ZKUSDT",
-    "ADAUSDT",
-    "CRCLUSDT",
-    "BICOUSDT",
-    "SOLUSDT",
-    "XAGUSDT",
-    "1000PEPEUSDT",
-    "FETUSDT",
-    "XAUUSDT",
-    "ARBUSDT",
-    "BZUSDT",
-    "APTUSDT",
-    "WLFIUSDT",
-    "TRXUSDT",
-    "DOGEUSDT",
-    "1000SHIBUSDT",
-    "CAKEUSDT",
-    "HYPEUSDT",
-]
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from shared.whitelist import FIXED_30_COINS, is_symbol_allowed, validate_symbol_or_reject
+
+# STRICT FIXED 30-COIN WHITELIST (1st coin: BTCUSDT)
+# Without these 30, no coin is accepted under any circumstances.
+SYMBOLS = list(FIXED_30_COINS)
 
 # Indicator & Exhaustion Filters
 RSI_PERIOD = 14

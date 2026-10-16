@@ -1,13 +1,54 @@
 import os
+import sys
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# Import fixed 30-coin whitelist
+try:
+    from shared.whitelist import FIXED_30_COINS, filter_allowed_symbols, is_symbol_allowed
+except ImportError:
+    _shared_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    if _shared_dir not in sys.path:
+        sys.path.insert(0, _shared_dir)
+    from shared.whitelist import FIXED_30_COINS, filter_allowed_symbols, is_symbol_allowed
+
 API_KEY = os.getenv("BINANCE_API_KEY", "")
 API_SECRET = os.getenv("BINANCE_API_SECRET", "")
 
-# Top 100 Binance USDT-M Futures Cryptocurrencies & Specifications
-SYMBOL_SPECS = {'BTCUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'ETHUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'SOLUSDT': {'price_prec': 4, 'qty_prec': 2, 'min_qty': 0.01}, 'ZECUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'TRUMPUSDT': {'price_prec': 6, 'qty_prec': 2, 'min_qty': 0.01}, 'XRPUSDT': {'price_prec': 4, 'qty_prec': 1, 'min_qty': 0.1}, 'HYPEUSDT': {'price_prec': 5, 'qty_prec': 2, 'min_qty': 0.01}, 'BTRUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'PROMUSDT': {'price_prec': 7, 'qty_prec': 1, 'min_qty': 0.1}, 'ENAUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, '4USDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'MAGMAUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'AKEUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'DOGEUSDT': {'price_prec': 6, 'qty_prec': 0, 'min_qty': 1.0}, 'PUMPUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'ONGUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'BNBUSDT': {'price_prec': 3, 'qty_prec': 2, 'min_qty': 0.01}, 'NILUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}, 'BEATUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'DEXEUSDT': {'price_prec': 6, 'qty_prec': 2, 'min_qty': 0.01}, 'TUTUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'SUIUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}, '1000PEPEUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'HEMIUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'GIGGLEUSDT': {'price_prec': 5, 'qty_prec': 2, 'min_qty': 0.01}, 'UNIUSDT': {'price_prec': 4, 'qty_prec': 0, 'min_qty': 1.0}, 'WLDUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'NEARUSDT': {'price_prec': 4, 'qty_prec': 0, 'min_qty': 1.0}, 'LINKUSDT': {'price_prec': 3, 'qty_prec': 2, 'min_qty': 0.01}, 'ADAUSDT': {'price_prec': 5, 'qty_prec': 0, 'min_qty': 1.0}, 'DOSUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'COTIUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'TAOUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'AAVEUSDT': {'price_prec': 3, 'qty_prec': 1, 'min_qty': 0.1}, 'ZKPUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'DASHUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'BANKUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'PENGUUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'CHIPUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'CLOUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'OUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'TRXUSDT': {'price_prec': 5, 'qty_prec': 0, 'min_qty': 1.0}, 'BCHUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'TACUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'BTWUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'AVAXUSDT': {'price_prec': 4, 'qty_prec': 0, 'min_qty': 1.0}, 'ONDOUSDT': {'price_prec': 7, 'qty_prec': 1, 'min_qty': 0.1}, 'LTCUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'SKRUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'MOVRUSDT': {'price_prec': 6, 'qty_prec': 2, 'min_qty': 0.01}, 'CYSUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'ROBOUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'LITUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}, 'HUMAUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'BLESSUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'XMRUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'RIVERUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}, 'FETUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'ASTERUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'INJUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}, 'EDENUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'ICPUSDT': {'price_prec': 6, 'qty_prec': 0, 'min_qty': 1.0}, 'XPLUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'XLMUSDT': {'price_prec': 5, 'qty_prec': 0, 'min_qty': 1.0}, 'DOTUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}, 'GRVTUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'BMTUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'FILUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}, 'COLLECTUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'WLFIUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'POLUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'BROCCOLI714USDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'VELVETUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'FARTCOINUSDT': {'price_prec': 7, 'qty_prec': 1, 'min_qty': 0.1}, 'TURBOUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'BANDUSDT': {'price_prec': 4, 'qty_prec': 1, 'min_qty': 0.1}, 'BICOUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, '1000SHIBUSDT': {'price_prec': 6, 'qty_prec': 0, 'min_qty': 1.0}, 'TSTUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'ZROUSDT': {'price_prec': 7, 'qty_prec': 1, 'min_qty': 0.1}, 'OPGUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'SIRENUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'STXUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'PAXGUSDT': {'price_prec': 4, 'qty_prec': 3, 'min_qty': 0.001}, 'HOMEUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'PROMPTUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'VVVUSDT': {'price_prec': 6, 'qty_prec': 2, 'min_qty': 0.01}, 'ACEUSDT': {'price_prec': 6, 'qty_prec': 2, 'min_qty': 0.01}, 'KOMAUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'WIFUSDT': {'price_prec': 7, 'qty_prec': 1, 'min_qty': 0.1}, 'LIGHTUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'UBUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'APTUSDT': {'price_prec': 5, 'qty_prec': 1, 'min_qty': 0.1}, 'HBARUSDT': {'price_prec': 5, 'qty_prec': 0, 'min_qty': 1.0}, 'LABUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'OPUSDT': {'price_prec': 7, 'qty_prec': 1, 'min_qty': 0.1}, 'KITEUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0}, 'XAUTUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001}, 'ONTUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}, 'HEIUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1}}
+# Fixed 30 Binance USDT-M Futures Cryptocurrencies & Specifications (1st: BTCUSDT)
+SYMBOL_SPECS = {
+    'BTCUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001},
+    'ETHUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001},
+    'SOLUSDT': {'price_prec': 4, 'qty_prec': 2, 'min_qty': 0.01},
+    'BNBUSDT': {'price_prec': 3, 'qty_prec': 2, 'min_qty': 0.01},
+    'XRPUSDT': {'price_prec': 4, 'qty_prec': 1, 'min_qty': 0.1},
+    'DOGEUSDT': {'price_prec': 6, 'qty_prec': 0, 'min_qty': 1.0},
+    'ADAUSDT': {'price_prec': 5, 'qty_prec': 0, 'min_qty': 1.0},
+    'SUIUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1},
+    'AVAXUSDT': {'price_prec': 4, 'qty_prec': 0, 'min_qty': 1.0},
+    'LINKUSDT': {'price_prec': 3, 'qty_prec': 2, 'min_qty': 0.01},
+    'NEARUSDT': {'price_prec': 4, 'qty_prec': 0, 'min_qty': 1.0},
+    'APTUSDT': {'price_prec': 5, 'qty_prec': 1, 'min_qty': 0.1},
+    'LTCUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001},
+    'BCHUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001},
+    'DOTUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1},
+    'UNIUSDT': {'price_prec': 4, 'qty_prec': 0, 'min_qty': 1.0},
+    'FETUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0},
+    'TAOUSDT': {'price_prec': 2, 'qty_prec': 3, 'min_qty': 0.001},
+    'ARBUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1},
+    'INJUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1},
+    'ONDOUSDT': {'price_prec': 7, 'qty_prec': 1, 'min_qty': 0.1},
+    'ENAUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0},
+    'WLDUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0},
+    'AAVEUSDT': {'price_prec': 3, 'qty_prec': 1, 'min_qty': 0.1},
+    'XLMUSDT': {'price_prec': 5, 'qty_prec': 0, 'min_qty': 1.0},
+    'ICPUSDT': {'price_prec': 6, 'qty_prec': 0, 'min_qty': 1.0},
+    'HBARUSDT': {'price_prec': 5, 'qty_prec': 0, 'min_qty': 1.0},
+    'TIAUSDT': {'price_prec': 7, 'qty_prec': 0, 'min_qty': 1.0},
+    'FILUSDT': {'price_prec': 6, 'qty_prec': 1, 'min_qty': 0.1},
+    'OPUSDT': {'price_prec': 7, 'qty_prec': 1, 'min_qty': 0.1}
+}
 
 def load_dynamic_symbols(engine_key: str, default_symbols):
     import json
@@ -20,12 +61,12 @@ def load_dynamic_symbols(engine_key: str, default_symbols):
                 pair_data = json.load(f)
                 alloc = pair_data.get("engine_allocations", {}).get(engine_key)
                 if alloc:
-                    return alloc
+                    return filter_allowed_symbols(alloc)
         except Exception:
             pass
-    return default_symbols
+    return filter_allowed_symbols(default_symbols)
 
-SYMBOLS = load_dynamic_symbols("engine_10_confluence_100pairs", list(SYMBOL_SPECS.keys()))
+SYMBOLS = load_dynamic_symbols("engine_10_confluence_100pairs", list(FIXED_30_COINS))
 
 # Timeframes
 TIMEFRAME_PRIMARY = "5m"
@@ -40,7 +81,7 @@ MIN_NOTIONAL_USDT = 5.5  # Binance minimum order size guard
 
 # Engine Thresholds (Strict 10/10 Confluence, No Trade Count Limit)
 SCORE_TRIGGER = 10       # Must score 10.0 out of 10 Points (100% Confluence)
-MAX_OPEN_POSITIONS = 100 # No limit on concurrent trades (all 100 pairs can trade if 10/10)
+MAX_OPEN_POSITIONS = 30  # Maximum open positions across the 30 pairs
 SCAN_INTERVAL = 15       # Scan cycle every 15 seconds
 
 # ATR Bracket Multipliers (1:2 Risk to Reward)

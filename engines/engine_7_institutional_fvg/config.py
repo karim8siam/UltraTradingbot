@@ -6,6 +6,9 @@ Strictly adheres to Section 78 and prompt specifications.
 import os
 from dataclasses import dataclass, field
 from typing import List, Tuple
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from shared.whitelist import FIXED_30_COINS, is_symbol_allowed, validate_symbol_or_reject
 
 def load_env_file(filepath: str = ".env") -> dict:
     """Load key-value pairs from .env file without external dependencies."""
@@ -65,15 +68,8 @@ class BotConfig:
     LIVE_REST_URL: str = "https://fapi.binance.com"
     TESTNET_REST_URL: str = "https://testnet.binancefuture.com"
 
-    # 2. Trading Pairs (Dynamically refreshed from 24h screener with 50%+ win-rate)
-    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols("engine_7_institutional_fvg", [
-        "BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT",
-        "DOGEUSDT", "ADAUSDT", "AVAXUSDT", "LINKUSDT", "SUIUSDT",
-        "NEARUSDT", "APTUSDT", "LTCUSDT", "BCHUSDT", "DOTUSDT",
-        "POLUSDT", "ETCUSDT", "XLMUSDT", "FILUSDT", "INJUSDT",
-        "RENDERUSDT", "1000PEPEUSDT", "1000SHIBUSDT", "1000BONKUSDT", "1000FLOKIUSDT",
-        "TIAUSDT", "SEIUSDT", "FETUSDT", "ARBUSDT", "OPUSDT"
-    ]))
+    # 2. Trading Pairs (STRICT FIXED 30-COIN WHITELIST - 1st: BTCUSDT)
+    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols("engine_7_institutional_fvg", list(FIXED_30_COINS)))
 
     # 3. Timeframes (Section 3)
     TF_BIAS_MAJOR: str = "4h"

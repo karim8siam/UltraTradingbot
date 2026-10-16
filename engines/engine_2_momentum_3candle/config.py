@@ -28,34 +28,13 @@ LEVERAGE = 5
 MARGIN_FRACTION = 0.001  # 0.1% of total balance per trade
 MAX_CONCURRENT_TRADES = 4
 
-# Top 25 High-Liquidity USDT-M Futures Pairs
-SYMBOLS = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "SOLUSDT",
-    "BNBUSDT",
-    "XRPUSDT",
-    "DOGEUSDT",
-    "ADAUSDT",
-    "TRXUSDT",
-    "AVAXUSDT",
-    "LINKUSDT",
-    "SUIUSDT",
-    "NEARUSDT",
-    "APTUSDT",
-    "DOTUSDT",
-    "LTCUSDT",
-    "BCHUSDT",
-    "PEPEUSDT",
-    "SHIBUSDT",
-    "UNIUSDT",
-    "FETUSDT",
-    "TAOUSDT",
-    "OPUSDT",
-    "ARBUSDT",
-    "INJUSDT",
-    "TIAUSDT",
-]
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from shared.whitelist import FIXED_30_COINS, is_symbol_allowed, validate_symbol_or_reject
+
+# STRICT FIXED 30-COIN WHITELIST (1st coin: BTCUSDT)
+# Without these 30, no coin is accepted under any circumstances.
+SYMBOLS = list(FIXED_30_COINS)
 
 # Candle Health & Quality Filters
 # Body must be at least 50% of the entire candle (High - Low)

@@ -3,8 +3,18 @@ Binance USDT-M Futures Systematic Swing Trading Bot - Configuration & Constants
 """
 
 import os
+import sys
 from dataclasses import dataclass, field
 from typing import List
+
+# Import fixed 30-coin whitelist
+try:
+    from shared.whitelist import FIXED_30_COINS, filter_allowed_symbols, is_symbol_allowed
+except ImportError:
+    _shared_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    if _shared_dir not in sys.path:
+        sys.path.insert(0, _shared_dir)
+    from shared.whitelist import FIXED_30_COINS, filter_allowed_symbols, is_symbol_allowed
 
 
 def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[str]:
@@ -18,10 +28,10 @@ def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[st
                 pair_data = json.load(f)
                 alloc = pair_data.get("engine_allocations", {}).get(engine_key)
                 if alloc:
-                    return alloc
+                    return filter_allowed_symbols(alloc)
         except Exception:
             pass
-    return default_symbols
+    return filter_allowed_symbols(default_symbols)
 
 
 @dataclass
@@ -35,34 +45,8 @@ class Config:
     PAPER_TRADING: bool = os.getenv("PAPER_TRADING", "false").lower() == "true"
     DRY_RUN: bool = os.getenv("DRY_RUN", "true").lower() == "true"
 
-    # ---------------- Default Trading Pairs (Dynamically refreshed from 24h screener) ----------------
-    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols("engine_9_futures_swing", [
-        "BTCUSDT",
-        "ETHUSDT",
-        "BNBUSDT",
-        "SOLUSDT",
-        "XRPUSDT",
-        "ADAUSDT",
-        "DOGEUSDT",
-        "AVAXUSDT",
-        "LINKUSDT",
-        "DOTUSDT",
-        "NEARUSDT",
-        "SUIUSDT",
-        "APTUSDT",
-        "OPUSDT",
-        "ARBUSDT",
-        "ATOMUSDT",
-        "LTCUSDT",
-        "BCHUSDT",
-        "ETCUSDT",
-        "FILUSDT",
-        "ICPUSDT",
-        "INJUSDT",
-        "TIAUSDT",
-        "RENDERUSDT",
-        "UNIUSDT"
-    ]))
+    # ---------------- Default Trading Pairs (STRICT FIXED 30-COIN WHITELIST - 1st: BTCUSDT) ----------------
+    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols("engine_9_futures_swing", list(FIXED_30_COINS)))
 
     # ---------------- Timeframes ----------------
     TF_DAILY: str = "1d"

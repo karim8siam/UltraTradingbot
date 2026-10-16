@@ -43,36 +43,10 @@ ATR_PERIOD = 14
 ATR_SL_MULT = float(os.getenv("ATR_SL_MULT", "1.55"))  # SL = Entry - (1.55 * ATR)
 ATR_TP_MULT = float(os.getenv("ATR_TP_MULT", "3.10"))  # TP = Entry + (3.10 * ATR) -> 1:2 R:R
 
-# Top 30 High-Liquidity Crypto USDT Pairs (Stablecoins & Pegged Tokens Excluded)
-SYMBOLS = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "SOLUSDT",
-    "BNBUSDT",
-    "XRPUSDT",
-    "DOGEUSDT",
-    "ADAUSDT",
-    "SUIUSDT",
-    "AVAXUSDT",
-    "LINKUSDT",
-    "NEARUSDT",
-    "APTUSDT",
-    "LTCUSDT",
-    "PEPEUSDT",
-    "UNIUSDT",
-    "FETUSDT",
-    "TAOUSDT",
-    "ARBUSDT",
-    "INJUSDT",
-    "ZECUSDT",
-    "ONDOUSDT",
-    "ENAUSDT",
-    "0GUSDT",
-    "QNTUSDT",
-    "WLDUSDT",
-    "AAVEUSDT",
-    "XLMUSDT",
-    "ICPUSDT",
-    "HBARUSDT",
-    "PUMPUSDT",
-]
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from shared.whitelist import FIXED_30_COINS, is_symbol_allowed, validate_symbol_or_reject
+
+# STRICT FIXED 30-COIN WHITELIST (1st coin: BTCUSDT)
+# Without these 30, no coin is accepted under any circumstances.
+SYMBOLS = list(FIXED_30_COINS)

@@ -22,56 +22,13 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
 USE_TESTNET = os.getenv("USE_TESTNET", "true").lower() in ("true", "1", "yes")
 
 # ==========================================
-# 2. 3-TIER ADAPTIVE MASTER PORTFOLIO (21 WHITELISTED PAIRS)
-# ==========================================
-# Tier 1: Core Majors (56%+ ML Threshold - Active Momentum)
-CORE_MAJOR_SYMBOLS = [
-    "BTC/USDT",
-    "ETH/USDT",
-    "BNB/USDT",
-    "SOL/USDT",
-    "XRP/USDT",
-    "ADA/USDT",
-    "NEAR/USDT",
-    "TRX/USDT"  # Tron
-]
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from shared.whitelist import FIXED_30_COINS, is_symbol_allowed, validate_symbol_or_reject
 
-# Tier 2: High-Risk Altcoins (58%+ ML Threshold - High Security Filter)
-HIGH_RISK_SYMBOLS_80_PCT = [
-    "AVAX/USDT",
-    "DOGE/USDT",
-    "LINK/USDT",
-    "DOT/USDT"
-]
-
-# Tier 3: Sniper Volatile Mid-Cap Tokens (62%+ ML Threshold - Ultra-Elite Grade-S+++)
-SNIPER_SYMBOLS_87_PCT = [
-    "SUI/USDT",
-    "APT/USDT",
-    "RENDER/USDT",
-    "TIA/USDT",
-    "INJ/USDT",
-    "ARB/USDT",
-    "OP/USDT",
-    "FET/USDT",
-    "SEI/USDT"
-]
-
-# Tier 4: Extended Liquid Futures Pairs (62%+ ML Threshold)
-EXTENDED_SYMBOLS = [
-    "LTC/USDT",
-    "UNI/USDT",
-    "ATOM/USDT",
-    "FIL/USDT",
-    "AAVE/USDT",
-    "WIF/USDT",
-    "PEPE/USDT",
-    "WLD/USDT",
-    "MATIC/USDT"
-]
-
-# 30 Whitelisted Master Portfolio Pairs
-ALLOWED_SYMBOLS = CORE_MAJOR_SYMBOLS + HIGH_RISK_SYMBOLS_80_PCT + SNIPER_SYMBOLS_87_PCT + EXTENDED_SYMBOLS
+# STRICT FIXED 30-COIN WHITELIST (1st coin: BTC/USDT)
+# Without these 30, no coin is accepted under any circumstances.
+ALLOWED_SYMBOLS = [s[:-4] + "/USDT" for s in FIXED_30_COINS]
 
 # Master Bitcoin Sentinel Layer (1-Hour Macro Trend Authority)
 ENABLE_BITCOIN_SENTINEL_LAYER = os.getenv("ENABLE_BITCOIN_SENTINEL_LAYER", "true").lower() == "true"
@@ -182,24 +139,27 @@ SERVER_HOST = os.getenv("HOST", "0.0.0.0")
 
 
 
-ALL_SUPPORTED_SYMBOLS = [
-    "BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "NEAR/USDT", "TRX/USDT",
-    "AVAX/USDT", "DOGE/USDT", "LINK/USDT", "DOT/USDT",
-    "SUI/USDT", "APT/USDT", "RENDER/USDT", "TIA/USDT", "INJ/USDT", "ARB/USDT", "OP/USDT", "FET/USDT", "SEI/USDT",
-    "LTC/USDT", "UNI/USDT", "ATOM/USDT", "FIL/USDT", "AAVE/USDT", "WIF/USDT", "PEPE/USDT", "WLD/USDT", "MATIC/USDT"
-]
+ALL_SUPPORTED_SYMBOLS = list(ALLOWED_SYMBOLS)
+ALLOWED_RAW_SYMBOLS = set(FIXED_30_COINS) | set(ALLOWED_SYMBOLS)
 
 
 def validate_symbol(symbol: str) -> str:
     """
-    Guarantees that only valid Binance USD(S)-M Futures symbols can ever be processed.
+    Guarantees that ONLY the approved 30 Binance USD(S)-M Futures symbols are processed.
+    Any other symbol is strictly rejected.
     """
-    normalized = symbol.upper().replace(":", "").replace("-", "/")
-    if "/" not in normalized and normalized.endswith("USDT"):
-        normalized = normalized[:-4] + "/USDT"
-    if normalized not in ALLOWED_SYMBOLS and normalized not in ALL_SUPPORTED_SYMBOLS:
+    raw = symbol.upper().replace(":", "").replace("-", "")
+    if "/" in raw:
+        slash_sym = raw
+        raw_sym = raw.replace("/", "")
+    else:
+        raw_sym = raw
+        slash_sym = raw[:-4] + "/USDT" if raw.endswith("USDT") else raw + "/USDT"
+
+    if raw_sym not in FIXED_30_COINS and slash_sym not in ALLOWED_SYMBOLS:
         raise ValueError(
-            f"SECURITY VIOLATION: Symbol '{symbol}' is not a recognized supported futures pair."
+            f"STRICT GATE REJECTION: Symbol '{symbol}' is not in the approved 30-coin whitelist! "
+            f"Without these 30, no coin is accepted."
         )
-    return normalized
+    return slash_sym
 

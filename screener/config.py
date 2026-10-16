@@ -1,39 +1,11 @@
 import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from shared.whitelist import FIXED_30_COINS, filter_allowed_symbols, is_symbol_allowed
 
-# Top 30 High-Liquidity USDT-M Futures Universe
-# Excludes stablecoins, pegged assets, and low-cap illiquid tokens
-SYMBOLS = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "SOLUSDT",
-    "BNBUSDT",
-    "XRPUSDT",
-    "DOGEUSDT",
-    "ADAUSDT",
-    "SUIUSDT",
-    "AVAXUSDT",
-    "LINKUSDT",
-    "NEARUSDT",
-    "APTUSDT",
-    "LTCUSDT",
-    "BCHUSDT",
-    "1000PEPEUSDT",
-    "UNIUSDT",
-    "FETUSDT",
-    "TAOUSDT",
-    "ARBUSDT",
-    "INJUSDT",
-    "ONDOUSDT",
-    "ENAUSDT",
-    "WLDUSDT",
-    "AAVEUSDT",
-    "XLMUSDT",
-    "ICPUSDT",
-    "HBARUSDT",
-    "DOTUSDT",
-    "TIAUSDT",
-    "FILUSDT"
-]
+# Strict 30 High-Liquidity USDT-M Futures Universe (1st coin: BTCUSDT)
+# Excludes stablecoins, pegged assets, and low-cap illiquid tokens. No other coin accepted.
+SYMBOLS = list(FIXED_30_COINS)
 
 # Alternate symbol mappings for exchanges that use PEPEUSDT instead of 1000PEPEUSDT
 ALT_SYMBOL_MAPPINGS = {

@@ -3,39 +3,14 @@ Trading Bot Constants & Default Configuration Parameters
 Based on Version 1 Specification
 """
 
-# Supported Top 30 Trading Pairs
-DEFAULT_SYMBOLS = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "SOLUSDT",
-    "BNBUSDT",
-    "XRPUSDT",
-    "DOGEUSDT",
-    "ADAUSDT",
-    "SUIUSDT",
-    "AVAXUSDT",
-    "LINKUSDT",
-    "TRXUSDT",
-    "NEARUSDT",
-    "PEPEUSDT",
-    "ENAUSDT",
-    "SHIBUSDT",
-    "LTCUSDT",
-    "BCHUSDT",
-    "DOTUSDT",
-    "UNIUSDT",
-    "APTUSDT",
-    "WLDUSDT",
-    "TAOUSDT",
-    "FETUSDT",
-    "RENDERUSDT",
-    "OPUSDT",
-    "ARBUSDT",
-    "FILUSDT",
-    "INJUSDT",
-    "AAVEUSDT",
-    "CRVUSDT",
-]
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
+from shared.whitelist import FIXED_30_COINS, is_symbol_allowed, validate_symbol_or_reject
+
+# STRICT FIXED 30-COIN WHITELIST (1st coin: BTCUSDT)
+# Without these 30, no coin is accepted under any circumstances.
+DEFAULT_SYMBOLS = list(FIXED_30_COINS)
 
 # Timeframes
 TIMEFRAME_MAJOR_TREND = "4h"

@@ -1,6 +1,9 @@
 import os
 from dataclasses import dataclass, field
 from typing import List, Tuple
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from shared.whitelist import FIXED_30_COINS, filter_allowed_symbols, is_symbol_allowed, validate_symbol_or_reject
 
 def get_env_bool(key: str, default: bool = False) -> bool:
     val = os.getenv(key, '').strip().lower()
@@ -33,10 +36,10 @@ def load_dynamic_symbols(engine_key: str, default_symbols: List[str]) -> List[st
                 pair_data = json.load(f)
                 alloc = pair_data.get("engine_allocations", {}).get(engine_key)
                 if alloc:
-                    return alloc
+                    return filter_allowed_symbols(alloc)
         except Exception:
             pass
-    return default_symbols
+    return filter_allowed_symbols(default_symbols)
 
 @dataclass
 class Config:
@@ -50,13 +53,8 @@ class Config:
     PAPER_TRADING: bool = field(default_factory=lambda: get_env_bool('PAPER_TRADING', False))
     EMERGENCY_STOP: bool = field(default_factory=lambda: get_env_bool('EMERGENCY_STOP', False))
 
-    # 2. Trading Pairs (Dynamically refreshed from 24h screener with 50%+ win-rate)
-    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols('engine_5_deterministic_smc', [
-        'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT',
-        'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'SUIUSDT',
-        'NEARUSDT', 'PEPEUSDT', 'SHIBUSDT', 'APTUSDT', 'LTCUSDT',
-        'TONUSDT', 'WIFUSDT', 'BCHUSDT', 'FETUSDT', 'TIAUSDT'
-    ]))
+    # 2. Trading Pairs (STRICT FIXED 30-COIN WHITELIST - 1st: BTCUSDT)
+    SYMBOLS: List[str] = field(default_factory=lambda: load_dynamic_symbols('engine_5_deterministic_smc', list(FIXED_30_COINS)))
 
     # 3. Strategy Parameters
     SWING_LENGTH: int = 2
