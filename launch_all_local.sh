@@ -17,9 +17,9 @@ echo "==========================================================================
 echo "🚀 LAUNCHING ALL 10 INDEPENDENT ULTRA TRADING ENGINES + DAILY SCREENER"
 echo "================================================================================"
 echo "Mode: Each engine runs as a completely decoupled, standalone process."
-echo "Logs Directory: $LOG_DIR"
-echo "PID Directory:  $PID_DIR"
-echo "--------------------------------------------------------------------------------"
+# Safely stop any existing instances before launching
+"$ROOT_DIR/stop_all_local.sh" 2>/dev/null || true
+sleep 1
 
 # 0. Daily Screener (24h Midnight Evaluator)
 echo "Starting [Daily Screener]..."
